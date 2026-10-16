@@ -28,7 +28,6 @@ import { PlayersModule } from './players/players.module';
         synchronize: false,
       }),
     }),
-    PlayersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
