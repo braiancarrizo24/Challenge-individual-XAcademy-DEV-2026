@@ -34,15 +34,14 @@ export class PlayerEditionEntity {
   @Column({ type: 'int', nullable: true })
   age: number | null;
 
-  @Column({ length: 150, nullable: true })
+  @Column({ type: 'varchar', length: 150, nullable: true })
   club: string | null;
 
-  @Column({ length: 80, nullable: true })
+  @Column({ type: 'varchar', length: 80, nullable: true })
   position: string | null;
 
   @Column({ type: 'int', nullable: true })
   rating: number | null;
-
   @OneToMany(
     () => PlayerSkillEntity,
     (skill) => skill.playerEdition,

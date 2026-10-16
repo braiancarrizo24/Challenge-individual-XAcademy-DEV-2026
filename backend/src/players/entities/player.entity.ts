@@ -15,10 +15,10 @@ export class PlayerEntity {
   @Column({ length: 150 })
   name: string;
 
-  @Column({ length: 100, nullable: true })
+  @Column({ type: 'varchar', length: 100, nullable: true })
   nationality: string | null;
 
-  @Column({ length: 20, nullable: true })
+  @Column({ type: 'varchar', length: 20, nullable: true })
   gender: string | null;
 
   @OneToMany(
