@@ -1,26 +1,108 @@
+
 <header>
-  <h1>FIFA Stats</h1>
+  <div>
+    <h1>FIFA Stats</h1>
+    <p>Estadísticas del fútbol en cada edición de FIFA</p>
+  </div>
 
   <nav>
     <a routerLink="/">Inicio</a>
-    <a routerLink="/Players">Jugadores</a>
-    <a routerLink="/Players">Jugadoras</a>
+    <a routerLink="/players">Jugadores</a>
+    <a routerLink="/players-women">Jugadoras</a>
     <a routerLink="/">Comparativas</a>
     <a routerLink="/">Equipos</a>
     <a routerLink="/">Ligas</a>
     <a routerLink="/">Nacionalidades</a>
-    <a routerLink="/">Jovenes promesas</a>
+    <a routerLink="/">Jóvenes promesas</a>
   </nav>
 </header>
 
 <main>
   <section>
-    <h2>Jugadores con mas media</h2>
-    <p>Estadisticas</p>
+    <h2>Bienvenido a FIFA Stats</h2>
+    <p>
+      Explorá jugadores, compará sus medias y descubrí
+      cómo evolucionaron sus estadísticas a través de
+      las distintas ediciones de FIFA.
+    </p>
   </section>
+<section>
+  <h2>Jugadores destacados</h2>
+  <p>Los jugadores con mayor media general.</p>
 
-  <section>
-    <h2>Jugadoras con mas media</h2>
-    <p>Estadisticas.</p>
-  </section>
+  <div>
+    <article>
+      <img src="assets/images/players/messi.png" alt="Imagen de Lionel Messi">
+
+      <div>
+        <h3>Lionel Messi</h3>
+        <p>Nacionalidad: Argentina </p>
+        <p>Posición: ED</p>
+        <p>Club: Paris Saint-Germain</p>
+        <P>Liga: Ligue 1 Uber Eats </P>
+        <p>Dorsal: 30 </p>
+        <p>Edición de FIFA: 2023</p>
+      </div>
+
+      <div>
+        <p>Media general</p>
+        <strong>91</strong>
+      </div>
+    </article>
+
+    <article>
+      <img src="assets/images/players/player-placeholder.png" alt="Imagen del jugador">
+
+      <div>
+        <h3>Kylian Mbappé Lottin</h3>
+        <p>Nacionalidad: Francesa </p>
+        <p>Posición: DC </p>
+        <p>Club: Paris Saint-Germain </p>
+        <P>Liga: Ligue 1 Uber Eats </P>
+        <p>Dorsal: 7 </p>
+        <p>Edición de FIFA: 2023 </p>
+      </div>
+
+      <div>
+        <p>Media general</p>
+        <strong>91</strong>
+      </div>
+    </article>
+  </div>
+
+  <a routerLink="/players">Ver todos los jugadores</a>
+</section>
+
+<section>
+  <h2>Jugadoras destacadas</h2>
+  <p>Las jugadoras con mayor media general.</p>
+
+  <div>
+    <article>
+      <img src="assets/images/players-women/player-placeholder.png" alt="Imagen de la jugadora">
+
+      <div>
+        <h3>Alexia Putellas</h3>
+        <p>Nacionalidad: Española </p>
+        <p>Posición: MC </p>
+        <p>Club: FC Barcelona </p>
+        <p>Edición de FIFA: 2023 </p>
+      </div>
+
+      <div>
+        <p>Media general</p>
+        <strong>92</strong>
+      </div>
+    </article>
+  </div>
+
+  <a routerLink="/players-women">Ver todas las jugadoras</a>
+</section>
 </main>
+
+<footer>
+  <p>FIFA Stats — Todos los derechos reservados.</p>
+</footer>
+
+
+
