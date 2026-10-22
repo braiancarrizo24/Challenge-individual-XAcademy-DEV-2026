@@ -1,4 +1,3 @@
-
 import { Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -8,4 +7,25 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.css',
   templateUrl: './home.html',
 })
-export class Home {}
+export class Home {
+  featuredPlayers = [
+    {
+      id: 1,
+      name: 'Jugador de prueba 1',
+      nationality: 'Argentina',
+      position: 'ED',
+      club: 'Club de prueba',
+      edition: 2023,
+      rating: 90,
+    },
+    {
+      id: 2,
+      name: 'Jugador de prueba 2',
+      nationality: 'Francia',
+      position: 'DC',
+      club: 'Club de prueba',
+      edition: 2023,
+      rating: 88,
+    },
+  ];
+}
