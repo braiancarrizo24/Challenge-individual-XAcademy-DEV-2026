@@ -9,6 +9,9 @@ import { RouterLink } from '@angular/router';
   templateUrl: './home.html',
 })
 export class Home implements OnInit {
+  isDarkMode = true;
+  language: 'es' | 'en' = 'es';
+
   featuredPlayers = [
     {
       id: 1,
@@ -39,5 +42,14 @@ export class Home implements OnInit {
       () => Math.random() - 0.5
     );
   }
+
+  toggleTheme(): void {
+    this.isDarkMode = !this.isDarkMode;
+  }
+
+  toggleLanguage(): void {
+    this.language = this.language === 'es' ? 'en' : 'es';
+  }
 }
+
 
