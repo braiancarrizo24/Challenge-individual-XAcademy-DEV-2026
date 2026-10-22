@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
 @Component({
@@ -7,7 +8,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './home.css',
   templateUrl: './home.html',
 })
-export class Home {
+export class Home implements OnInit {
   featuredPlayers = [
     {
       id: 1,
@@ -28,4 +29,15 @@ export class Home {
       rating: 88,
     },
   ];
+
+  ngOnInit(): void {
+    this.selectFeaturedPlayers();
+  }
+
+  selectFeaturedPlayers(): void {
+    this.featuredPlayers = [...this.featuredPlayers].sort(
+      () => Math.random() - 0.5
+    );
+  }
 }
+

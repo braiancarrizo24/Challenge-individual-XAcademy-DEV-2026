@@ -32,6 +32,27 @@
   <p>Una selección de jugadores y sus medias en distintas ediciones.</p>
 
   <div>
+
+    
+<div>
+  @for (player of featuredPlayers; track player.id) {
+    <article>
+      <div>
+        <h3>{{ player.name }}</h3>
+        <p>Nacionalidad: {{ player.nationality }}</p>
+        <p>Posición: {{ player.position }}</p>
+        <p>Club: {{ player.club }}</p>
+        <p>Edición de FIFA: {{ player.edition }}</p>
+      </div>
+
+      <div>
+        <p>Media general</p>
+        <strong>{{ player.rating }}</strong>
+      </div>
+    </article>
+  }
+</div>
+
     <article>
       <img
         src="assets/images/players/messi.png"
