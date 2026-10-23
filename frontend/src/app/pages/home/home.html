@@ -1,5 +1,4 @@
 
-
 <header>
   <div>
     <h1>FIFA Stats</h1>
@@ -40,146 +39,470 @@
     <p>Una selección de jugadores y sus medias en distintas ediciones.</p>
 
     <div class="players-grid">
-      <div class="players-dynamic">
-        @for (player of featuredPlayers; track player.id) {
-          <article class="player-card">
+      <!-- Jugadores destacados dinámicos con sus gráficos radar -->
+     
+<div class="players-dynamic">
+  @for (player of featuredPlayers; track player.id) {
+    <div class="featured-player">
+      <article class="player-card">
+        <div class="player-card-info">
+          <h3>{{ player.name }}</h3>
+          <p>Nacionalidad: {{ player.nationality }}</p>
+          <p>Posición: {{ player.position }}</p>
+          <p>Club: {{ player.club }}</p>
+          <p>Edición de FIFA: {{ player.edition }}</p>
+        </div>
+
+        <div class="player-card-rating">
+          <p>Media general</p>
+          <strong>{{ player.rating }}</strong>
+        </div>
+      </article>
+
+      <div class="stats-chart">
+        <h3>Estadísticas de {{ player.name }}</h3>
+
+        <div class="radar-chart">
+          <svg
+            viewBox="0 0 300 270"
+            role="img"
+            aria-label="Gráfico de radar con seis categorías de estadísticas"
+          >
+            <polygon points="150,109 168,119 168,141 150,151 132,141 132,119" />
+            <polygon points="150,88 186,109 186,151 150,172 114,151 114,109" />
+            <polygon points="150,67 204,98 204,162 150,193 96,162 96,98" />
+            <polygon points="150,46 222,87 222,173 150,214 78,173 78,87" />
+            <polygon points="150,25 240,77 240,181 150,233 60,181 60,77" />
+
+            <line x1="150" y1="129" x2="150" y2="25" />
+            <line x1="150" y1="129" x2="240" y2="77" />
+            <line x1="150" y1="129" x2="240" y2="181" />
+            <line x1="150" y1="129" x2="150" y2="233" />
+            <line x1="150" y1="129" x2="60" y2="181" />
+            <line x1="150" y1="129" x2="60" y2="77" />
+
+            <text x="150" y="14" text-anchor="middle">Ritmo</text>
+            <text x="247" y="70">Tiro</text>
+            <text x="247" y="192">Pase</text>
+            <text x="150" y="253" text-anchor="middle">Regate</text>
+            <text x="20" y="192">Defensa</text>
+            <text x="20" y="70">Físico</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  }
+</div>
+
+
+      <!-- Contenedor independiente para los jugadores con mayor media -->
+      <div class="top-rated-players">
+        <!-- Tarjeta de Lionel Messi -->
+        <article class="player-card">
+          <div class="player-card-main">
             <div class="player-card-info">
-              <h3>{{ player.name }}</h3>
-              <p>Nacionalidad: {{ player.nationality }}</p>
-              <p>Posición: {{ player.position }}</p>
-              <p>Club: {{ player.club }}</p>
-              <p>Edición de FIFA: {{ player.edition }}</p>
+              <img
+                src="assets/images/players/messi.png"
+                alt="Imagen de Lionel Messi"
+              />
+
+              <h3>Lionel Messi</h3>
+              <p>Nacionalidad: Argentina</p>
+              <p>Posición: ED</p>
+              <p>Club: Paris Saint-Germain</p>
+              <p>Liga: Ligue 1</p>
+              <p>Dorsal: 30</p>
+              <p>Edición de FIFA: 2023</p>
+
+              <div class="player-card-rating">
+                <p>Media general</p>
+                <strong>91</strong>
+              </div>
             </div>
 
-            <div class="player-card-rating">
-              <p>Media general</p>
-              <strong>{{ player.rating }}</strong>
-            </div>
-          </article>
+            <div class="player-detailed-stats">
+              <h4>Estadísticas detalladas</h4>
 
-          <div class="stats-chart">
-            <h3>Estadísticas de {{ player.name }}</h3>
+              <div class="stat-row">
+                <span>Aceleración</span>
+                <progress value="87" max="100"></progress>
+                <strong>87</strong>
+              </div>
 
-            <div class="radar-chart">
-              <svg
-                viewBox="0 0 300 270"
-                role="img"
-                aria-label="Gráfico de radar con seis categorías de estadísticas"
-              >
-                <!-- Anillos del radar -->
-                <polygon points="150,109 168,119 168,141 150,151 132,141 132,119" />
-                <polygon points="150,88 186,109 186,151 150,172 114,151 114,109" />
-                <polygon points="150,67 204,98 204,162 150,193 96,162 96,98" />
-                <polygon points="150,46 222,87 222,173 150,214 78,173 78,87" />
-                <polygon points="150,25 240,77 240,181 150,233 60,181 60,77" />
+              <div class="stat-row">
+                <span>Velocidad de sprint</span>
+                <progress value="76" max="100"></progress>
+                <strong>76</strong>
+              </div>
 
-                <!-- Ejes -->
-                <line x1="150" y1="129" x2="150" y2="25" />
-                <line x1="150" y1="129" x2="240" y2="77" />
-                <line x1="150" y1="129" x2="240" y2="181" />
-                <line x1="150" y1="129" x2="150" y2="233" />
-                <line x1="150" y1="129" x2="60" y2="181" />
-                <line x1="150" y1="129" x2="60" y2="77" />
+              <div class="stat-row">
+                <span>Definición</span>
+                <progress value="90" max="100"></progress>
+                <strong>90</strong>
+              </div>
 
-                <!-- Etiquetas -->
-                <text x="150" y="14" text-anchor="middle">Ritmo</text>
-                <text x="247" y="70">Tiro</text>
-                <text x="247" y="192">Pase</text>
-                <text x="150" y="253" text-anchor="middle">Regate</text>
-                <text x="20" y="192">Defensa</text>
-                <text x="20" y="70">Físico</text>
-              </svg>
+              <div class="stat-row">
+                <span>Potencia de tiro</span>
+                <progress value="86" max="100"></progress>
+                <strong>86</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Pase corto</span>
+                <progress value="91" max="100"></progress>
+                <strong>91</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Visión</span>
+                <progress value="94" max="100"></progress>
+                <strong>94</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Control de balón</span>
+                <progress value="93" max="100"></progress>
+                <strong>93</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Regate</span>
+                <progress value="95" max="100"></progress>
+                <strong>95</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Fuerza</span>
+                <progress value="68" max="100"></progress>
+                <strong>68</strong>
+              </div>
             </div>
           </div>
-        }
+
+          <a routerLink="/players">Consultar jugadores</a>
+        </article>
+
+        <!-- Tarjeta de Kylian Mbappé -->
+        <article class="player-card">
+          <div class="player-card-main">
+            <div class="player-card-info">
+              <img
+                src="assets/images/players/player-placeholder.png"
+                alt="Imagen de Kylian Mbappé"
+              />
+
+              <h3>Kylian Mbappé</h3>
+              <p>Nacionalidad: Francia</p>
+              <p>Posición: DC</p>
+              <p>Club: Paris Saint-Germain</p>
+              <p>Liga: Ligue 1</p>
+              <p>Dorsal: 7</p>
+              <p>Edición de FIFA: 2023</p>
+
+              <div class="player-card-rating">
+                <p>Media general</p>
+                <strong>91</strong>
+              </div>
+            </div>
+
+            <div class="player-detailed-stats">
+              <h4>Estadísticas detalladas</h4>
+
+              <div class="stat-row">
+                <span>Aceleración</span>
+                <progress value="97" max="100"></progress>
+                <strong>97</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Velocidad de sprint</span>
+                <progress value="97" max="100"></progress>
+                <strong>97</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Definición</span>
+                <progress value="89" max="100"></progress>
+                <strong>89</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Potencia de tiro</span>
+                <progress value="77" max="100"></progress>
+                <strong>77</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Pase corto</span>
+                <progress value="83" max="100"></progress>
+                <strong>83</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Visión</span>
+                <progress value="80" max="100"></progress>
+                <strong>80</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Control de balón</span>
+                <progress value="91" max="100"></progress>
+                <strong>91</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Regate</span>
+                <progress value="93" max="100"></progress>
+                <strong>93</strong>
+              </div>
+
+              <div class="stat-row">
+                <span>Fuerza</span>
+                <progress value="76" max="100"></progress>
+                <strong>76</strong>
+              </div>
+            </div>
+          </div>
+
+          <a routerLink="/players">Consultar jugadores</a>
+        </article>
       </div>
-
-      <article class="player-card">
-        <img
-          src="assets/images/players/messi.png"
-          alt="Imagen de Lionel Messi"
-        />
-
-        <div class="player-card-info">
-          <h3>Lionel Messi</h3>
-          <p>Nacionalidad: Argentina</p>
-          <p>Posición: ED</p>
-          <p>Club: Paris Saint-Germain</p>
-          <p>Liga: Ligue 1</p>
-          <p>Dorsal: 30</p>
-          <p>Edición de FIFA: 2023</p>
-        </div>
-
-        <div class="player-card-rating">
-          <p>Media general</p>
-          <strong>91</strong>
-        </div>
-
-        <a routerLink="/players">Consultar jugadores</a>
-      </article>
-
-      <article class="player-card">
-        <img
-          src="assets/images/players/player-placeholder.png"
-          alt="Imagen de Kylian Mbappé"
-        />
-
-        <div class="player-card-info">
-          <h3>Kylian Mbappé</h3>
-          <p>Nacionalidad: Francia</p>
-          <p>Posición: DC</p>
-          <p>Club: Paris Saint-Germain</p>
-          <p>Liga: Ligue 1</p>
-          <p>Dorsal: 7</p>
-          <p>Edición de FIFA: 2023</p>
-        </div>
-
-        <div class="player-card-rating">
-          <p>Media general</p>
-          <strong>91</strong>
-        </div>
-
-        <a routerLink="/players">Consultar jugadores</a>
-      </article>
     </div>
 
     <a routerLink="/players">Ver todos los jugadores</a>
   </section>
 
-  <section>
-    <h2>Jugadoras destacadas</h2>
-    <p>Una selección de jugadoras y sus medias en distintas ediciones.</p>
+  
 
-    <div>
-      <article class="player-card">
-        <img
-          src="assets/images/players-women/player-placeholder.png"
-          alt="Imagen de Alexia Putellas"
-        />
 
+<section class="featured-section">
+  <h2>Jugadoras con mayor media</h2>
+
+  <div class="top-rated-players">
+    <article class="player-card">
+      <div class="player-card-main">
         <div class="player-card-info">
+          <img
+            src="assets/images/players-women/player-placeholder.png"
+            alt="Imagen de Alexia Putellas"
+          />
+
           <h3>Alexia Putellas</h3>
           <p>Nacionalidad: España</p>
           <p>Posición: MC</p>
           <p>Club: FC Barcelona</p>
+          <p>Liga: Liga F</p>
+          <p>Dorsal: 11</p>
           <p>Edición de FIFA: 2023</p>
+
+          <div class="player-card-rating">
+            <p>Media general</p>
+            <strong>92</strong>
+          </div>
         </div>
 
-        <div class="player-card-rating">
-          <p>Media general</p>
-          <strong>92</strong>
+        <div class="player-detailed-stats">
+          <h4>Estadísticas detalladas</h4>
+
+          <div class="stat-row">
+            <span>Aceleración</span>
+            <progress value="80" max="100"></progress>
+            <strong>80</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Velocidad de sprint</span>
+            <progress value="80" max="100"></progress>
+            <strong>80</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Definición</span>
+            <progress value="90" max="100"></progress>
+            <strong>90</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Potencia de tiro</span>
+            <progress value="86" max="100"></progress>
+            <strong>86</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Pase corto</span>
+            <progress value="92" max="100"></progress>
+            <strong>92</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Visión</span>
+            <progress value="94" max="100"></progress>
+            <strong>94</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Control de balón</span>
+            <progress value="93" max="100"></progress>
+            <strong>93</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Regate</span>
+            <progress value="92" max="100"></progress>
+            <strong>92</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Fuerza</span>
+            <progress value="65" max="100"></progress>
+            <strong>65</strong>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/players-women">Consultar jugadoras</a>
+    </article>
+
+    <article class="player-card">
+      <div class="player-card-main">
+        <div class="player-card-info">
+          <img
+            src="assets/images/players-women/player-placeholder.png"
+            alt="Imagen de Sam Kerr"
+          />
+
+          <h3>Sam Kerr</h3>
+          <p>Nacionalidad: Australia</p>
+          <p>Posición: DC</p>
+          <p>Club: Chelsea</p>
+          <p>Liga: Barclays Women's Super League</p>
+          <p>Dorsal: 20</p>
+          <p>Edición de FIFA: 2023</p>
+
+          <div class="player-card-rating">
+            <p>Media general</p>
+            <strong>91</strong>
+          </div>
         </div>
 
-        <a routerLink="/players-women">Consultar jugadoras</a>
-      </article>
-    </div>
+        <div class="player-detailed-stats">
+          <h4>Estadísticas detalladas</h4>
 
-    <a routerLink="/players-women">Ver todas las jugadoras</a>
-  </section>
+          <div class="stat-row">
+            <span>Aceleración</span>
+            <progress value="87" max="100"></progress>
+            <strong>87</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Velocidad de sprint</span>
+            <progress value="86" max="100"></progress>
+            <strong>86</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Definición</span>
+            <progress value="92" max="100"></progress>
+            <strong>92</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Potencia de tiro</span>
+            <progress value="88" max="100"></progress>
+            <strong>88</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Pase corto</span>
+            <progress value="74" max="100"></progress>
+            <strong>74</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Visión</span>
+            <progress value="80" max="100"></progress>
+            <strong>80</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Control de balón</span>
+            <progress value="88" max="100"></progress>
+            <strong>88</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Regate</span>
+            <progress value="89" max="100"></progress>
+            <strong>89</strong>
+          </div>
+
+          <div class="stat-row">
+            <span>Fuerza</span>
+            <progress value="86" max="100"></progress>
+            <strong>86</strong>
+          </div>
+        </div>
+      </div>
+
+      <a routerLink="/players-women">Consultar jugadoras</a>
+    </article>
+  </div>
+
+  <a routerLink="/players-women">Ver todas las jugadoras</a>
+</section>
+
+
+
 </main>
 
-<footer>
-  <p>FIFA Stats — Todos los derechos reservados.</p>
+
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <h2>⚽ FIFA Stats</h2>
+      <p>
+        Explorá estadísticas, rendimiento y evolución de jugadores
+        y jugadoras a través de distintas ediciones de FIFA.
+      </p>
+
+      <div class="footer-info">
+        <p>📊 Datos organizados por edición</p>
+        <p>📅 Ediciones FIFA 2015–2023</p>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <h3>Explorar</h3>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/players">Jugadores</a>
+      <a routerLink="/players-women">Jugadoras</a>
+    </div>
+
+    <div class="footer-features">
+      <h3>Estadísticas</h3>
+      <p>Media general</p>
+      <p>Atributos individuales</p>
+      <p>Evolución por edición</p>
+      <p>Nacionalidades</p>
+    </div>
+  </div>
+
+  <div class="footer-tagline">
+    <span>🏆</span>
+    <div>
+      <h3>Cada edición, una historia.</h3>
+      <p>Un proyecto educativo de desarrollo web.</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 FIFA Stats · Todos los derechos reservados.</p>
+  </div>
 </footer>
+
+
+
+
 
 

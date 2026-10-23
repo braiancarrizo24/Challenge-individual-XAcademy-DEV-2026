@@ -1,3 +1,4 @@
+
 header {
   display: flex;
   justify-content: space-between;
@@ -15,178 +16,501 @@ header p {
 }
 
 header nav {
-    display: flex;
-    gap: 25px;
-    
+  display: flex;
+  gap: 25px;
 }
 
-header nav a{
-    text-decoration: none;
-    color: #cbd5e1;
-    transition: color 0.3s ease;
+header nav a {
+  text-decoration: none;
+  color: #cbd5e1;
+  transition: color 0.3s ease;
 }
 
 header nav a:hover {
-    color: white;
+  color: white;
 }
 
 header nav summary {
-    cursor: pointer;
-    list-style: none;
-    color: #cbd5e1;
-    transition: color 0.3s ease;
+  cursor: pointer;
+  list-style: none;
+  color: #cbd5e1;
+  transition: color 0.3s ease;
 }
+
 header nav summary:hover {
-    color: white;
+  color: white;
 }
 
 header nav details {
-    position: relative;
-    margin-left: 8px;
+  position: relative;
+  margin-left: 8px;
 }
 
 header nav details a {
-    display: block;
-    padding: 8px 12px;
+  display: block;
+  padding: 8px 12px;
 }
 
 header nav details a:first-of-type {
-    margin-top: 8px;
+  margin-top: 8px;
 }
 
 header nav details[open] {
-    background-color: #1e293b;
-    position: relative;
+  background-color: #1e293b;
+  position: relative;
 }
 
 header nav details[open] a {
-    display: block;
+  display: block;
 }
 
 header nav details .dropdown-menu {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    min-width: 180px;
-    padding: 6px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 180px;
+  padding: 6px;
+  z-index: 10;
+  background-color: #1e293b;
 }
 
 header nav details .dropdown-menu a:hover {
-    color: white;
-    margin-bottom: 4px;
+  color: white;
+  margin-bottom: 4px;
 }
 
 main {
-    background-color: #0f172a;
-    color: #e2e8f0;
+  background-color: #0f172a;
+  color: #e2e8f0;
 }
 
 main section {
-    padding: 32px;
-
+  padding: 32px;
 }
 
 main section p {
-    max-width: 800px;
-    line-height: 1.7;
+  max-width: 800px;
+  line-height: 1.7;
 }
 
 main section h2 {
-    margin-bottom: 16px;
+  margin-bottom: 16px;
 }
+
+/* ========================================
+   CONTENEDORES GENERALES DE JUGADORES
+   ======================================== */
 
 .players-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  min-width: 0;
 }
+
+/* ========================================
+   JUGADORES DESTACADOS
+   Orden: tarjeta 1 - gráfico 1 - tarjeta 2 - gráfico 2
+   ======================================== */
 
 .players-dynamic {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 24px;
-    width: 100%;
-    align-items: stretch;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
 }
 
-.stats-chart {
-    flex: 2 1 400px;
-    min-width: 0;
-    min-height: 220px;
-    padding: 16px;
-    box-sizing: border-box;
-    border: 1px dashed #64748b;
+/* Los elementos internos participan directamente en el grid */
+.featured-player {
+  display: contents;
 }
 
-.players-dynamic article {
-    flex: 1 1 250px;
-    min-width: 0;
-    padding: 20px;
-    box-sizing: border-box;
+.players-dynamic .player-card,
+.players-dynamic .stats-chart {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
 }
+
+.players-dynamic .player-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 20px;
+}
+
+.players-dynamic .player-card-info {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.players-dynamic .stats-chart {
+  padding: 16px;
+  border: 1px dashed #64748b;
+  align-self: stretch;
+}
+
+.players-dynamic .player-card-rating {
+  margin-top: auto;
+}
+
+/* ========================================
+   TARJETAS Y GRÁFICOS GENERALES
+   ======================================== */
 
 .player-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  box-sizing: border-box;
 }
 
 .player-card-info h3 {
-    margin-top: 0;
-    margin-bottom: 12px;
+  margin-top: 0;
+  margin-bottom: 12px;
 }
 
 .player-card-info p {
-    margin: 8px 0;
-    line-height: 1.5;
+  margin: 8px 0;
+  line-height: 1.5;
 }
 
 .player-card-rating {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
 }
 
 .player-card-rating p {
-    margin: 0;
+  margin: 0;
 }
 
 .player-card-rating strong {
-    font-size: 28px;
+  font-size: 28px;
+}
+
+.stats-chart {
+  min-width: 0;
+  min-height: 220px;
+  padding: 16px;
+  box-sizing: border-box;
+  border: 1px dashed #64748b;
 }
 
 .stats-chart h3 {
-    margin-top: 0;
-    margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
 }
 
 .radar-chart {
-    width: 100%;
-    max-width: 360px;
-    margin: 0 auto;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
 }
 
 .radar-chart svg {
-    display: block;
-    width: 100%;
-    height: auto;
-    overflow: visible;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
 }
 
 .radar-chart polygon {
-    fill: none;
-    stroke: #64748b;
-    stroke-width: 1;
+  fill: none;
+  stroke: #64748b;
+  stroke-width: 1;
 }
 
 .radar-chart line {
-    stroke: #64748b;
-    stroke-width: 1;
+  stroke: #64748b;
+  stroke-width: 1;
 }
 
 .radar-chart text {
-    fill: #e2e8f0;
-    font-size: 10px;
+  fill: #e2e8f0;
+  font-size: 10px;
+}
+
+/* ========================================
+   ESTADÍSTICAS DETALLADAS
+   ======================================== */
+
+.player-card-main {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(280px, 1.5fr);
+  gap: 24px;
+  align-items: start;
+  min-width: 0;
+}
+
+.player-card-info,
+.player-detailed-stats {
+  min-width: 0;
+}
+
+.player-card-info img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.player-detailed-stats {
+  width: 100%;
+  margin-top: 0;
+}
+
+.player-detailed-stats h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(70px, 2fr) 32px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.stat-row span {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.stat-row progress {
+  width: 100%;
+  height: 8px;
+  min-width: 0;
+}
+
+.stat-row strong {
+  text-align: right;
+  font-size: 0.85rem;
+}
+
+/* ========================================
+   JUGADORES CON MAYOR MEDIA
+   Una fila por jugador: tarjeta - gráfico
+   ======================================== */
+
+.top-rated-players {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Contenedor de cada jugador y su gráfico */
+.top-rated-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.top-rated-player > .player-card,
+.top-rated-player > .stats-chart {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ========================================
+   DISEÑO RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1100px) {
+  .players-dynamic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .player-card-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  header nav {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  main section {
+    padding: 20px;
+  }
+
+  .players-dynamic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .top-rated-player {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat-row {
+    grid-template-columns: minmax(85px, 1fr) minmax(50px, 2fr) 30px;
+    gap: 8px;
+  }
+}
+
+
+
+.main-footer {
+  margin-top: 60px;
+  padding: 45px 6% 20px;
+  background-color: #111827;
+  color: #f3f4f6;
+  border-top: 2px solid #00c8ff;
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1fr;
+  gap: 60px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.footer-brand h2 {
+  margin: 0 0 16px;
+  color: #00c8ff;
+  font-size: 1.7rem;
+}
+
+.footer-brand > p {
+  max-width: 400px;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.footer-info {
+  margin-top: 22px;
+}
+
+.footer-info p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin: 10px 0;
+}
+
+.footer-content h3 {
+  margin: 0 0 18px;
+  font-size: 1.05rem;
+  color: #ffffff;
+}
+
+.footer-links,
+.footer-features {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-links {
+  gap: 13px;
+}
+
+.footer-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #00c8ff;
+}
+
+.footer-features p {
+  margin: 0 0 13px;
+  color: #cbd5e1;
+}
+
+.footer-tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 40px auto 0;
+  padding: 25px 15px;
+  border-top: 1px solid #374151;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+}
+
+.footer-tagline > span {
+  font-size: 2rem;
+}
+
+.footer-tagline h3 {
+  margin: 0 0 6px;
+  color: #00c8ff;
+}
+
+.footer-tagline p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.footer-bottom {
+  max-width: 1300px;
+  margin: 22px auto 0;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 800px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 500px) {
+  .main-footer {
+    padding: 35px 6% 20px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-tagline {
+    justify-content: flex-start;
+  }
 }
