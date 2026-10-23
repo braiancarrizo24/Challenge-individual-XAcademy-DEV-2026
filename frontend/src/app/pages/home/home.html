@@ -1,24 +1,28 @@
 
+
 <header>
   <div>
     <h1>FIFA Stats</h1>
     <p>Estadísticas del fútbol en cada edición de FIFA</p>
   </div>
 
- <nav>
-  <a routerLink="/">Inicio</a>
-  <a routerLink="/players">Jugadores</a>
-  <a routerLink="/players-women">Jugadoras</a>
-  <a routerLink="/teams">Equipos</a>
-  <details>
-  <summary>Más secciones</summary>
+  <nav>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/players">Jugadores</a>
+    <a routerLink="/players-women">Jugadoras</a>
+    <a routerLink="/teams">Equipos</a>
 
-  <a routerLink="/comparisons">Comparativas</a>
-  <a routerLink="/leagues">Ligas</a>
-  <a routerLink="/nationalities">Nacionalidades</a>
-  <a routerLink="/young-talents">Jóvenes promesas</a>
-</details>
-</nav>
+    <details>
+      <summary>Más secciones</summary>
+
+      <div class="dropdown-menu">
+        <a routerLink="/comparisons">Comparativas</a>
+        <a routerLink="/leagues">Ligas</a>
+        <a routerLink="/nationalities">Nacionalidades</a>
+        <a routerLink="/young-talents">Jóvenes promesas</a>
+      </div>
+    </details>
+  </nav>
 </header>
 
 <main>
@@ -31,120 +35,151 @@
     </p>
   </section>
 
-<section>
-  <h2>Jugadores destacados</h2>
-  <p>Una selección de jugadores y sus medias en distintas ediciones.</p>
+  <section>
+    <h2>Jugadores destacados</h2>
+    <p>Una selección de jugadores y sus medias en distintas ediciones.</p>
 
-  <div>
+    <div class="players-grid">
+      <div class="players-dynamic">
+        @for (player of featuredPlayers; track player.id) {
+          <article class="player-card">
+            <div class="player-card-info">
+              <h3>{{ player.name }}</h3>
+              <p>Nacionalidad: {{ player.nationality }}</p>
+              <p>Posición: {{ player.position }}</p>
+              <p>Club: {{ player.club }}</p>
+              <p>Edición de FIFA: {{ player.edition }}</p>
+            </div>
 
-    
-<div>
-  @for (player of featuredPlayers; track player.id) {
-    <article>
-      <div>
-        <h3>{{ player.name }}</h3>
-        <p>Nacionalidad: {{ player.nationality }}</p>
-        <p>Posición: {{ player.position }}</p>
-        <p>Club: {{ player.club }}</p>
-        <p>Edición de FIFA: {{ player.edition }}</p>
+            <div class="player-card-rating">
+              <p>Media general</p>
+              <strong>{{ player.rating }}</strong>
+            </div>
+          </article>
+
+          <div class="stats-chart">
+            <h3>Estadísticas de {{ player.name }}</h3>
+
+            <div class="radar-chart">
+              <svg
+                viewBox="0 0 300 270"
+                role="img"
+                aria-label="Gráfico de radar con seis categorías de estadísticas"
+              >
+                <!-- Anillos del radar -->
+                <polygon points="150,109 168,119 168,141 150,151 132,141 132,119" />
+                <polygon points="150,88 186,109 186,151 150,172 114,151 114,109" />
+                <polygon points="150,67 204,98 204,162 150,193 96,162 96,98" />
+                <polygon points="150,46 222,87 222,173 150,214 78,173 78,87" />
+                <polygon points="150,25 240,77 240,181 150,233 60,181 60,77" />
+
+                <!-- Ejes -->
+                <line x1="150" y1="129" x2="150" y2="25" />
+                <line x1="150" y1="129" x2="240" y2="77" />
+                <line x1="150" y1="129" x2="240" y2="181" />
+                <line x1="150" y1="129" x2="150" y2="233" />
+                <line x1="150" y1="129" x2="60" y2="181" />
+                <line x1="150" y1="129" x2="60" y2="77" />
+
+                <!-- Etiquetas -->
+                <text x="150" y="14" text-anchor="middle">Ritmo</text>
+                <text x="247" y="70">Tiro</text>
+                <text x="247" y="192">Pase</text>
+                <text x="150" y="253" text-anchor="middle">Regate</text>
+                <text x="20" y="192">Defensa</text>
+                <text x="20" y="70">Físico</text>
+              </svg>
+            </div>
+          </div>
+        }
       </div>
 
-      <div>
-        <p>Media general</p>
-        <strong>{{ player.rating }}</strong>
-      </div>
-    </article>
-  }
-</div>
+      <article class="player-card">
+        <img
+          src="assets/images/players/messi.png"
+          alt="Imagen de Lionel Messi"
+        />
 
-    <article>
-      <img
-        src="assets/images/players/messi.png"
-        alt="Imagen de Lionel Messi"
-      >
+        <div class="player-card-info">
+          <h3>Lionel Messi</h3>
+          <p>Nacionalidad: Argentina</p>
+          <p>Posición: ED</p>
+          <p>Club: Paris Saint-Germain</p>
+          <p>Liga: Ligue 1</p>
+          <p>Dorsal: 30</p>
+          <p>Edición de FIFA: 2023</p>
+        </div>
 
-      <div>
-        <h3>Lionel Messi</h3>
-        <p>Nacionalidad: Argentina</p>
-        <p>Posición: ED</p>
-        <p>Club: Paris Saint-Germain</p>
-        <p>Liga: Ligue 1</p>
-        <p>Dorsal: 30</p>
-        <p>Edición de FIFA: 2023</p>
-      </div>
+        <div class="player-card-rating">
+          <p>Media general</p>
+          <strong>91</strong>
+        </div>
 
-      <div>
-        <p>Media general</p>
-        <strong>91</strong>
-      </div>
+        <a routerLink="/players">Consultar jugadores</a>
+      </article>
 
-      <a routerLink="/players">Consultar jugadores</a>
-    </article>
+      <article class="player-card">
+        <img
+          src="assets/images/players/player-placeholder.png"
+          alt="Imagen de Kylian Mbappé"
+        />
 
-    <article>
-      <img
-        src="assets/images/players/player-placeholder.png"
-        alt="Imagen de Kylian Mbappé"
-      >
+        <div class="player-card-info">
+          <h3>Kylian Mbappé</h3>
+          <p>Nacionalidad: Francia</p>
+          <p>Posición: DC</p>
+          <p>Club: Paris Saint-Germain</p>
+          <p>Liga: Ligue 1</p>
+          <p>Dorsal: 7</p>
+          <p>Edición de FIFA: 2023</p>
+        </div>
 
-      <div>
-        <h3>Kylian Mbappé</h3>
-        <p>Nacionalidad: Francia</p>
-        <p>Posición: DC</p>
-        <p>Club: Paris Saint-Germain</p>
-        <p>Liga: Ligue 1</p>
-        <p>Dorsal: 7</p>
-        <p>Edición de FIFA: 2023</p>
-      </div>
+        <div class="player-card-rating">
+          <p>Media general</p>
+          <strong>91</strong>
+        </div>
 
-      <div>
-        <p>Media general</p>
-        <strong>91</strong>
-      </div>
+        <a routerLink="/players">Consultar jugadores</a>
+      </article>
+    </div>
 
-      <a routerLink="/players">Consultar jugadores</a>
-    </article>
-  </div>
+    <a routerLink="/players">Ver todos los jugadores</a>
+  </section>
 
-  <a routerLink="/players">Ver todos los jugadores</a>
-</section>
+  <section>
+    <h2>Jugadoras destacadas</h2>
+    <p>Una selección de jugadoras y sus medias en distintas ediciones.</p>
 
-<section>
-  <h2>Jugadoras destacadas</h2>
-  <p>Una selección de jugadoras y sus medias en distintas ediciones.</p>
+    <div>
+      <article class="player-card">
+        <img
+          src="assets/images/players-women/player-placeholder.png"
+          alt="Imagen de Alexia Putellas"
+        />
 
-  <div>
-    <article>
-      <img
-        src="assets/images/players-women/player-placeholder.png"
-        alt="Imagen de Alexia Putellas"
-      >
+        <div class="player-card-info">
+          <h3>Alexia Putellas</h3>
+          <p>Nacionalidad: España</p>
+          <p>Posición: MC</p>
+          <p>Club: FC Barcelona</p>
+          <p>Edición de FIFA: 2023</p>
+        </div>
 
-      <div>
-        <h3>Alexia Putellas</h3>
-        <p>Nacionalidad: España</p>
-        <p>Posición: MC</p>
-        <p>Club: FC Barcelona</p>
-        <p>Edición de FIFA: 2023</p>
-      </div>
+        <div class="player-card-rating">
+          <p>Media general</p>
+          <strong>92</strong>
+        </div>
 
-      <div>
-        <p>Media general</p>
-        <strong>92</strong>
-      </div>
+        <a routerLink="/players-women">Consultar jugadoras</a>
+      </article>
+    </div>
 
-      <a routerLink="/players-women">Consultar jugadoras</a>
-    </article>
-  </div>
-
-  <a routerLink="/players-women">Ver todas las jugadoras</a>
-</section>
-
+    <a routerLink="/players-women">Ver todas las jugadoras</a>
+  </section>
 </main>
 
 <footer>
   <p>FIFA Stats — Todos los derechos reservados.</p>
 </footer>
-
 
 

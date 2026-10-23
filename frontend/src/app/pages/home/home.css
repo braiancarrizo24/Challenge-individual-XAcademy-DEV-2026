@@ -1,0 +1,192 @@
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 32px;
+  gap: 26px;
+  background-color: #121826;
+}
+
+header p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+header nav {
+    display: flex;
+    gap: 25px;
+    
+}
+
+header nav a{
+    text-decoration: none;
+    color: #cbd5e1;
+    transition: color 0.3s ease;
+}
+
+header nav a:hover {
+    color: white;
+}
+
+header nav summary {
+    cursor: pointer;
+    list-style: none;
+    color: #cbd5e1;
+    transition: color 0.3s ease;
+}
+header nav summary:hover {
+    color: white;
+}
+
+header nav details {
+    position: relative;
+    margin-left: 8px;
+}
+
+header nav details a {
+    display: block;
+    padding: 8px 12px;
+}
+
+header nav details a:first-of-type {
+    margin-top: 8px;
+}
+
+header nav details[open] {
+    background-color: #1e293b;
+    position: relative;
+}
+
+header nav details[open] a {
+    display: block;
+}
+
+header nav details .dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 180px;
+    padding: 6px;
+}
+
+header nav details .dropdown-menu a:hover {
+    color: white;
+    margin-bottom: 4px;
+}
+
+main {
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+main section {
+    padding: 32px;
+
+}
+
+main section p {
+    max-width: 800px;
+    line-height: 1.7;
+}
+
+main section h2 {
+    margin-bottom: 16px;
+}
+
+.players-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+}
+
+.players-dynamic {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    width: 100%;
+    align-items: stretch;
+}
+
+.stats-chart {
+    flex: 2 1 400px;
+    min-width: 0;
+    min-height: 220px;
+    padding: 16px;
+    box-sizing: border-box;
+    border: 1px dashed #64748b;
+}
+
+.players-dynamic article {
+    flex: 1 1 250px;
+    min-width: 0;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.player-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.player-card-info h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+}
+
+.player-card-info p {
+    margin: 8px 0;
+    line-height: 1.5;
+}
+
+.player-card-rating {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.player-card-rating p {
+    margin: 0;
+}
+
+.player-card-rating strong {
+    font-size: 28px;
+}
+
+.stats-chart h3 {
+    margin-top: 0;
+    margin-bottom: 16px;
+}
+
+.radar-chart {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto;
+}
+
+.radar-chart svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+}
+
+.radar-chart polygon {
+    fill: none;
+    stroke: #64748b;
+    stroke-width: 1;
+}
+
+.radar-chart line {
+    stroke: #64748b;
+    stroke-width: 1;
+}
+
+.radar-chart text {
+    fill: #e2e8f0;
+    font-size: 10px;
+}
