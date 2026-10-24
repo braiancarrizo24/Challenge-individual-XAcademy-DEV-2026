@@ -1,19 +1,34 @@
 
-<header>
-  <div>
-    <h1>FIFA Stats</h1>
-    <p>Estadísticas del fútbol en cada edición de FIFA</p>
+<header id="top">
+  <div class="header-brand">
+    <h1><span>FIFA</span> Stats</h1>
   </div>
 
+  <form
+    class="header-search"
+    role="search"
+    (submit)="$event.preventDefault()"
+  >
+    <input
+      type="search"
+      placeholder="Buscar jugador..."
+      aria-label="Buscar jugador o jugadora"
+    />
+    <button type="submit" aria-label="Buscar">⌕</button>
+  </form>
+
   <nav>
+    <p class="header-tagline">
+      Estadísticas del fútbol en cada edición de FIFA
+    </p>
+
     <a routerLink="/">Inicio</a>
     <a routerLink="/players">Jugadores</a>
     <a routerLink="/players-women">Jugadoras</a>
     <a routerLink="/teams">Equipos</a>
 
-    <details>
+    <details class="nav-dropdown">
       <summary>Más secciones</summary>
-
       <div class="dropdown-menu">
         <a routerLink="/comparisons">Comparativas</a>
         <a routerLink="/leagues">Ligas</a>
@@ -21,8 +36,44 @@
         <a routerLink="/young-talents">Jóvenes promesas</a>
       </div>
     </details>
+    
+    <div class="header-controls">
+  <details class="header-control">
+    <summary title="Cambiar tema">
+      <span aria-hidden="true">◐</span>
+      <span>Tema</span>
+      <span class="control-arrow">▾</span>
+    </summary>
+
+    <div class="control-dropdown">
+      
+    <button type="button" (click)="setTheme(true)">
+      ☀️ Modo claro
+    </button>
+    <button type="button" (click)="setTheme(false)">
+    🌙 Modo oscuro
+    </button>
+
+    </div>
+  </details>
+
+  <details class="header-control">
+    <summary title="Cambiar idioma">
+      <span aria-hidden="true">🌐</span>
+      <span>Idioma</span>
+      <span class="control-arrow">▾</span>
+    </summary>
+
+    <div class="control-dropdown">
+      <button type="button">🇦🇷 Español</button>
+      <button type="button">🇬🇧 English</button>
+    </div>
+  </details>
+</div>
+
   </nav>
 </header>
+
 
 <main>
   <section>

@@ -1,6 +1,10 @@
 
+
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+
+type Theme = 'light' | 'dark';
+type Language = 'es' | 'en';
 
 @Component({
   imports: [RouterLink],
@@ -10,7 +14,7 @@ import { RouterLink } from '@angular/router';
 })
 export class Home implements OnInit {
   isDarkMode = true;
-  language: 'es' | 'en' = 'es';
+  language: Language = 'es';
 
   featuredPlayers = [
     {
@@ -34,7 +38,9 @@ export class Home implements OnInit {
   ];
 
   ngOnInit(): void {
+    this.loadPreferences();
     this.selectFeaturedPlayers();
+    this.applyTheme();
   }
 
   selectFeaturedPlayers(): void {
@@ -45,11 +51,45 @@ export class Home implements OnInit {
 
   toggleTheme(): void {
     this.isDarkMode = !this.isDarkMode;
+    this.applyTheme();
+    localStorage.setItem('fifa-stats-theme', this.isDarkMode ? 'dark' : 'light');
   }
+
+  setTheme(dark: boolean): void {
+  this.isDarkMode = dark;
+  this.applyTheme();
+
+  localStorage.setItem(
+    'fifa-stats-theme',
+    dark ? 'dark' : 'light'
+  );
+}
+
 
   toggleLanguage(): void {
     this.language = this.language === 'es' ? 'en' : 'es';
+    localStorage.setItem('fifa-stats-language', this.language);
+  }
+
+  private loadPreferences(): void {
+    const savedTheme = localStorage.getItem('fifa-stats-theme');
+    const savedLanguage = localStorage.getItem('fifa-stats-language');
+
+    if (savedTheme === 'light' || savedTheme === 'dark') {
+      this.isDarkMode = savedTheme === 'dark';
+    }
+
+    if (savedLanguage === 'es' || savedLanguage === 'en') {
+      this.language = savedLanguage;
+    }
+  }
+
+  private applyTheme(): void {
+    const theme: Theme = this.isDarkMode ? 'dark' : 'light';
+
+    document.documentElement.setAttribute('data-theme', theme);
   }
 }
+
 
 
