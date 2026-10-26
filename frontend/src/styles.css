@@ -1,1 +1,26 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  color-scheme: dark;
+  --page-bg: #0f172a;
+  --header-bg: #121826;
+  --surface-bg: #1e293b;
+  --surface-hover: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-link: #cbd5e1;
+  --border-color: #334155;
+  --accent-color: #00c8ff;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --page-bg: #f1f5f9;
+  --header-bg: #ffffff;
+  --surface-bg: #ffffff;
+  --surface-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-link: #334155;
+  --border-color: #cbd5e1;
+  --accent-color: #0284c7;
+}

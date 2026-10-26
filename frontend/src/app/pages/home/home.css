@@ -32,7 +32,7 @@ header {
   align-items: center;
   gap: 24px;
   padding: 20px 76px 20px 32px;
-  background: #121826;
+  background: var(--header-bg);
 }
 
 .header-brand {
@@ -138,6 +138,12 @@ header nav > a:hover {
   white-space: nowrap;
 }
 
+body {
+  background: var(--page-bg);
+  color: var(--text-primary);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
 /* Dropdown Más secciones */
 
 .nav-dropdown {
@@ -201,8 +207,8 @@ header nav > a:hover {
    ======================================== */
 
 main {
-  background-color: #0f172a;
-  color: #e2e8f0;
+  background: var(--page-bg);
+  color: var(--text-primary);
 }
 
 main section {
@@ -714,6 +720,7 @@ main section h2 {
   background: #334155;
   border-color: #00c8ff;
 }
+
 
 .control-arrow {
   color: #00c8ff;
