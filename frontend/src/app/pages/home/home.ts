@@ -1,5 +1,4 @@
 
-
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
 
@@ -56,15 +55,14 @@ export class Home implements OnInit {
   }
 
   setTheme(dark: boolean): void {
-  this.isDarkMode = dark;
-  this.applyTheme();
+    this.isDarkMode = dark;
+    this.applyTheme();
 
-  localStorage.setItem(
-    'fifa-stats-theme',
-    dark ? 'dark' : 'light'
-  );
-}
-
+    localStorage.setItem(
+      'fifa-stats-theme',
+      dark ? 'dark' : 'light'
+    );
+  }
 
   toggleLanguage(): void {
     this.language = this.language === 'es' ? 'en' : 'es';
@@ -89,7 +87,13 @@ export class Home implements OnInit {
 
     document.documentElement.setAttribute('data-theme', theme);
   }
-}
 
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+}
 
 

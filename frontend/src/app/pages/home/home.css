@@ -833,3 +833,52 @@ main section > a:focus-visible {
   }
 }
 
+
+/* Botón flotante para volver al inicio */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--accent-color);
+  border-radius: 50%;
+
+  background-color: var(--accent-color);
+  color: var(--header-bg);
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 500px) {
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
