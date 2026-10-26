@@ -212,7 +212,8 @@ main {
 }
 
 main section {
-  padding: 32px;
+  padding: 28px clamp(16px, 2.5vw, 36px);
+  box-sizing: border-box;
 }
 
 main section p {
@@ -221,7 +222,11 @@ main section p {
 }
 
 main section h2 {
-  margin-bottom: 16px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 750;
+  line-height: 1.25;
 }
 
 /* ========================================
@@ -289,6 +294,7 @@ main section h2 {
    TARJETAS Y GRÁFICOS GENERALES
    ======================================== */
 
+
 .player-card {
   display: flex;
   flex-direction: column;
@@ -297,7 +303,13 @@ main section h2 {
   min-width: 0;
   padding: 20px;
   box-sizing: border-box;
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--accent-color);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
 }
+
 
 .player-card-info h3 {
   margin-top: 0;
@@ -320,16 +332,23 @@ main section h2 {
   margin: 0;
 }
 
+
 .player-card-rating strong {
-  font-size: 28px;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
 }
+
 
 .stats-chart {
   min-width: 0;
   min-height: 220px;
   padding: 16px;
   box-sizing: border-box;
-  border: 1px dashed #64748b;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-bg);
 }
 
 .stats-chart h3 {
@@ -363,7 +382,7 @@ main section h2 {
 }
 
 .radar-chart text {
-  fill: #e2e8f0;
+  fill: var(--text-primary);
   font-size: 10px;
 }
 
@@ -423,12 +442,58 @@ main section h2 {
 .stat-row strong {
   text-align: right;
   font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
 }
 
 /* ========================================
    JUGADORES CON MAYOR MEDIA
    Una fila por jugador: tarjeta - gráfico
    ======================================== */
+
+/* Enlaces de las tarjetas de jugadores */
+.player-card > a,
+.player-card > a:visited {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 8px;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* Enlaces para ver todos los jugadores */
+main section > a,
+main section > a:visited {
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 20px;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+main section > a:hover {
+  text-decoration: underline;
+}
+
+main section > a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+  border-radius: 2px;
+}  
+
+.player-card > a:hover {
+  text-decoration: underline;
+}
+
+.player-card > a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
 
 .top-rated-players {
   display: flex;
@@ -459,13 +524,15 @@ main section h2 {
    FOOTER
    ======================================== */
 
+
 .main-footer {
   margin-top: 60px;
   padding: 45px 6% 20px;
-  background-color: #111827;
-  color: #f3f4f6;
-  border-top: 2px solid #00c8ff;
+  background-color: var(--header-bg);
+  color: var(--text-primary);
+  border-top: 2px solid var(--accent-color);
 }
+
 
 .footer-content {
   display: grid;
@@ -500,7 +567,7 @@ main section h2 {
 .footer-content h3 {
   margin: 0 0 18px;
   font-size: 1.05rem;
-  color: #ffffff;
+  color: var(--text-primary);
 }
 
 .footer-links,
