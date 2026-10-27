@@ -1,0 +1,8 @@
+@for (edition of editionService.editions; track edition) {
+  <button
+    type="button"
+    (click)="editionService.selectEdition(edition)"
+  >
+    FIFA {{ edition }}
+  </button>
+}
