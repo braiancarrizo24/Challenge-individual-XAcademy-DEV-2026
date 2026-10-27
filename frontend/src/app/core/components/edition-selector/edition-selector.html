@@ -1,8 +1,37 @@
-@for (edition of editionService.editions; track edition) {
-  <button
-    type="button"
-    (click)="editionService.selectEdition(edition)"
-  >
-    FIFA {{ edition }}
-  </button>
-}
+<section class="edition-selector">
+  
+  <div class="edition-carousel">
+    <button
+      type="button"
+      class="carousel-arrow"
+      aria-label="Ver ediciones anteriores"
+      (click)="previousEditions()"
+      [disabled]="visibleStartIndex === 0"
+    >
+      &#8249;
+    </button>
+
+    <div class="edition-options">
+      @for (edition of visibleEditions; track edition) {
+        <button
+          type="button"
+          [class.selected]="editionService.selectedEdition() === edition"
+          (click)="editionService.selectEdition(edition)"
+        >
+          FIFA {{ edition }}
+        </button>
+      }
+    </div>
+
+    <button
+      type="button"
+      class="carousel-arrow"
+      aria-label="Ver ediciones siguientes"
+      (click)="nextEditions()"
+      [disabled]="visibleStartIndex >= editionService.editions.length - visibleEditionsCount"
+    >
+      &#8250;
+    </button>
+  </div>
+</section>
+

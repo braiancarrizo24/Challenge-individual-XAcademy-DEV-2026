@@ -1,12 +1,13 @@
 
 import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
 
 type Theme = 'light' | 'dark';
 type Language = 'es' | 'en';
 
 @Component({
-  imports: [RouterLink],
+  imports: [RouterLink, EditionSelector],
   selector: 'app-home',
   styleUrl: './home.css',
   templateUrl: './home.html',
@@ -48,12 +49,6 @@ export class Home implements OnInit {
     );
   }
 
-  toggleTheme(): void {
-    this.isDarkMode = !this.isDarkMode;
-    this.applyTheme();
-    localStorage.setItem('fifa-stats-theme', this.isDarkMode ? 'dark' : 'light');
-  }
-
   setTheme(dark: boolean): void {
     this.isDarkMode = dark;
     this.applyTheme();
@@ -64,9 +59,17 @@ export class Home implements OnInit {
     );
   }
 
+  toggleTheme(): void {
+    this.setTheme(!this.isDarkMode);
+  }
+
   toggleLanguage(): void {
     this.language = this.language === 'es' ? 'en' : 'es';
-    localStorage.setItem('fifa-stats-language', this.language);
+
+    localStorage.setItem(
+      'fifa-stats-language',
+      this.language
+    );
   }
 
   private loadPreferences(): void {
@@ -95,5 +98,4 @@ export class Home implements OnInit {
     });
   }
 }
-
 

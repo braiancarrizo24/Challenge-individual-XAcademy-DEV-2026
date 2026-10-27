@@ -1,4 +1,3 @@
-
 <header id="top">
   <div class="header-brand">
     <h1><span>FIFA</span> Stats</h1>
@@ -47,10 +46,10 @@
 
     <div class="control-dropdown">
       
-    <button type="button" (click)="setTheme(true)">
+    <button type="button" (click)="setTheme(false)">
       ☀️ Modo claro
     </button>
-    <button type="button" (click)="setTheme(false)">
+    <button type="button" (click)="setTheme(true)">
     🌙 Modo oscuro
     </button>
 
@@ -76,14 +75,20 @@
 
 
 <main>
-  <section>
+ 
+<section class="welcome-section">
+  <div class="welcome-content">
     <h2>Bienvenido a FIFA Stats</h2>
     <p>
       Explorá jugadores, compará sus medias y descubrí
       cómo evolucionaron sus estadísticas a través de
       las distintas ediciones de FIFA.
     </p>
-  </section>
+  </div>
+
+  <app-edition-selector />
+</section>
+
 
   <section>
     <h2>Jugadores destacados</h2>
