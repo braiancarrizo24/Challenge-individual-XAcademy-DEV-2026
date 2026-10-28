@@ -35,14 +35,15 @@
 .edition-options button,
 .carousel-arrow {
   min-height: 40px;
-  border: 1px solid #b8c2cc;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
   background: transparent;
   color: inherit;
   cursor: pointer;
   transition:
     background-color 0.2s ease,
-    border-color 0.2s ease;
+    border-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .edition-options button {
@@ -58,8 +59,8 @@
 
 .edition-options button:hover:not(.selected),
 .carousel-arrow:hover:not(:disabled) {
-  background-color: #e8edf2;
-  border-color: #64748b;
+  background-color: var(--surface-hover);
+  border-color: var(--accent-color);
 }
 
 .edition-options button.selected {
@@ -67,6 +68,12 @@
   border-color: #1d4ed8;
   color: #ffffff;
   font-weight: 700;
+}
+
+.edition-options button:focus-visible,
+.carousel-arrow:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
 }
 
 .carousel-arrow:disabled {
@@ -88,3 +95,4 @@
     font-size: 0.85rem;
   }
 }
+

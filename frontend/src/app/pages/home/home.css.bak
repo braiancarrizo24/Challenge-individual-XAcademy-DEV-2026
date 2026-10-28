@@ -1,0 +1,1003 @@
+:root {
+  color-scheme: dark;
+
+  --page-bg: #0f172a;
+  --header-bg: #121826;
+  --surface-bg: #1e293b;
+  --surface-hover: #334155;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-link: #cbd5e1;
+  --border-color: #334155;
+  --accent-color: #00c8ff;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --page-bg: #f1f5f9;
+  --header-bg: #ffffff;
+  --surface-bg: #ffffff;
+  --surface-hover: #e2e8f0;
+  --text-primary: #0f172a;
+  --text-secondary: #64748b;
+  --text-link: #334155;
+  --border-color: #cbd5e1;
+  --accent-color: #0284c7;
+}
+
+
+
+header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 20px 24px;
+  padding: 28px 32px;
+  background: var(--header-bg);
+}
+
+
+
+.header-brand {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+}
+
+.header-brand h1 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(1.8rem, 2.2vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.header-brand h1 span {
+  color: var(--accent-color);
+}
+
+
+
+.header-brand p {
+  max-width: 260px;
+  margin: 5px 0 0;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+.header-search {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 0 1 470px;
+  min-width: 190px;
+  margin: 0;
+  padding: 4px 6px 4px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 24px;
+  background: var(--surface-bg);
+}
+
+.header-search input {
+  width: 100%;
+  min-width: 0;
+  padding: 7px 0;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  background: transparent;
+}
+
+.header-search input::placeholder {
+  color: var(--text-secondary);
+}
+
+.header-search button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: var(--accent-color);
+  color: var(--header-bg);
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.header-search button:hover {
+  filter: brightness(0.92);
+}
+
+
+header nav {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1 1 auto;
+  flex-wrap: nowrap;
+  min-width: 0;
+  gap: 18px;
+  margin-right: 12px;
+}
+
+
+header nav > a {
+  color: var(--text-link);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+header nav > a:hover {
+  color: var(--accent-color);
+}
+
+.header-tagline {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+/* Dropdown Más secciones */
+
+.nav-dropdown {
+  position: relative;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.nav-dropdown summary {
+  color: var(--text-link);
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  appearance: none;
+}
+
+.nav-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-dropdown summary::after {
+  content: " ▾";
+  color: var(--accent-color);
+  font-size: 0.8rem;
+}
+
+.nav-dropdown[open] summary,
+.nav-dropdown summary:hover {
+  color: var(--accent-color);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 12px);
+  left: 0;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+  padding: 8px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.dropdown-menu a {
+  display: block;
+  padding: 11px 12px;
+  border-radius: 6px;
+  color: var(--text-primary);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.dropdown-menu a:hover {
+  background: var(--surface-hover);
+  color: var(--accent-color);
+}
+
+
+/* ========================================
+   CONTENIDO PRINCIPAL
+   ======================================== */
+
+
+main {
+  margin-top: 0px;
+  background: var(--page-bg);
+  color: var(--text-primary);
+}
+
+
+main section {
+  padding: 28px clamp(16px, 2.5vw, 36px);
+  box-sizing: border-box;
+}
+
+main section p {
+  max-width: 800px;
+  line-height: 1.7;
+}
+
+main section h2 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-size: clamp(1.35rem, 2vw, 1.75rem);
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+/* =========================================
+   Bienvenida y selector de edición FIFA
+   ========================================= */
+
+.welcome-section {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 360px);
+  align-items: center;
+  gap: 32px;
+}
+
+.welcome-content {
+  min-width: 0;
+}
+
+.welcome-content h2 {
+  margin-bottom: 12px;
+}
+
+.welcome-content p {
+  margin-bottom: 0;
+}
+
+.welcome-section app-edition-selector {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  margin-top: 16px;
+}
+
+/* ========================================
+   CONTENEDORES GENERALES DE JUGADORES
+   ======================================== */
+
+.players-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
+  min-width: 0;
+}
+
+/* ========================================
+   JUGADORES DESTACADOS
+   Orden: tarjeta 1 - gráfico 1 - tarjeta 2 - gráfico 2
+   ======================================== */
+
+.players-dynamic {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.featured-player {
+  display: contents;
+}
+
+.players-dynamic .player-card,
+.players-dynamic .stats-chart {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+.players-dynamic .player-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  padding: 20px;
+}
+
+.players-dynamic .player-card-info {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.players-dynamic .stats-chart {
+  padding: 16px;
+  border: 1px dashed var(--border-color);
+  align-self: stretch;
+}
+
+.players-dynamic .player-card-rating {
+  margin-top: auto;
+}
+
+/* ========================================
+   TARJETAS Y GRÁFICOS GENERALES
+   ======================================== */
+
+
+.player-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 16px;
+  min-width: 0;
+  padding: 20px;
+  box-sizing: border-box;
+  background: var(--surface-bg);
+  border: 1px solid var(--border-color);
+  border-top: 3px solid var(--accent-color);
+  border-radius: 12px;
+  transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.player-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--accent-color);
+}
+
+
+.player-card-info h3 {
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.player-card-info p {
+  margin: 8px 0;
+  line-height: 1.5;
+}
+
+.player-card-rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.player-card-rating p {
+  margin: 0;
+}
+
+
+.player-card-rating strong {
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+
+.stats-chart {
+  min-width: 0;
+  min-height: 220px;
+  padding: 16px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-bg);
+}
+
+.stats-chart h3 {
+  margin-top: 0;
+  margin-bottom: 16px;
+  overflow-wrap: anywhere;
+}
+
+.radar-chart {
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.radar-chart svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.radar-chart polygon {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.radar-chart line {
+  stroke: var(--border-color);
+  stroke-width: 1;
+}
+
+.radar-chart text {
+  fill: var(--text-primary);
+  font-size: 10px;
+}
+
+/* ========================================
+   ESTADÍSTICAS DETALLADAS
+   ======================================== */
+
+.player-card-main {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) minmax(280px, 1.5fr);
+  gap: 24px;
+  align-items: start;
+  min-width: 0;
+}
+
+.player-card-info,
+.player-detailed-stats {
+  min-width: 0;
+}
+
+.player-card-info img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.player-detailed-stats {
+  width: 100%;
+  margin-top: 0;
+}
+
+.player-detailed-stats h4 {
+  margin-top: 0;
+  margin-bottom: 16px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: minmax(100px, 1fr) minmax(70px, 2fr) 32px;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  min-width: 0;
+}
+
+.stat-row span {
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+
+.stat-row progress {
+  width: 100%;
+  height: 8px;
+  min-width: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  overflow: hidden;
+  border: none;
+  border-radius: 999px;
+  background-color: var(--surface-hover);
+}
+
+.stat-row progress::-webkit-progress-value,
+.stat-row progress::-moz-progress-bar {
+  background-color: var(--accent-color);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.stat-row progress::-moz-progress-bar {
+  background-color: var(--accent-color);
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+
+.stat-row strong {
+  text-align: right;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* ========================================
+   JUGADORES CON MAYOR MEDIA
+   Una fila por jugador: tarjeta - gráfico
+   ======================================== */
+
+/* Enlaces de las tarjetas de jugadores */
+.player-card > a,
+.player-card > a:visited {
+  display: inline-block;
+  align-self: flex-start;
+  margin-top: 8px;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+/* Enlaces para ver todos los jugadores */
+main section > a,
+main section > a:visited {
+  display: inline-block;
+  margin-top: 20px;
+  margin-left: 20px;
+  color: var(--accent-color);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+main section > a:hover {
+  text-decoration: underline;
+}
+
+main section > a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+  border-radius: 2px;
+}  
+
+.player-card > a:hover {
+  text-decoration: underline;
+}
+
+.player-card > a:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 4px;
+  border-radius: 2px;
+}
+
+.top-rated-players {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+  min-width: 0;
+}
+
+.top-rated-player {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 1fr);
+  gap: 24px;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+}
+
+.top-rated-player > .player-card,
+.top-rated-player > .stats-chart {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+/* ========================================
+   FOOTER
+   ======================================== */
+
+
+
+.main-footer {
+  margin-top: 0;
+  padding: 45px 6% 20px;
+  background-color: var(--header-bg);
+  color: var(--text-primary);
+  border-top: 2px solid var(--accent-color);
+}
+
+
+
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr 1fr;
+  gap: 60px;
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.footer-brand h2 {
+  margin: 0 0 16px;
+  color: #00c8ff;
+  font-size: 1.7rem;
+}
+
+.footer-brand > p {
+  max-width: 400px;
+  color: #cbd5e1;
+  line-height: 1.7;
+}
+
+.footer-info {
+  margin-top: 22px;
+}
+
+.footer-info p {
+  color: #9ca3af;
+  font-size: 0.9rem;
+  margin: 10px 0;
+}
+
+.footer-content h3 {
+  margin: 0 0 18px;
+  font-size: 1.05rem;
+  color: var(--text-primary);
+}
+
+.footer-links,
+.footer-features {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.footer-links {
+  gap: 13px;
+}
+
+.footer-links a {
+  color: #cbd5e1;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.footer-links a:hover {
+  color: #00c8ff;
+}
+
+.footer-features p {
+  margin: 0 0 13px;
+  color: #cbd5e1;
+}
+
+.footer-tagline {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  margin: 40px auto 0;
+  padding: 25px 15px;
+  border-top: 1px solid #374151;
+  border-bottom: 1px solid #374151;
+  text-align: left;
+}
+
+.footer-tagline > span {
+  font-size: 2rem;
+}
+
+.footer-tagline h3 {
+  margin: 0 0 6px;
+  color: #00c8ff;
+}
+
+.footer-tagline p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.9rem;
+}
+
+.footer-bottom {
+  max-width: 1300px;
+  margin: 22px auto 0;
+  text-align: center;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: #9ca3af;
+  font-size: 0.85rem;
+}
+
+/* ========================================
+   DISEÑO RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1100px) {
+  header {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-right: 32px;
+  }
+
+  header nav {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    margin-right: 0;
+  }
+
+  .header-tagline {
+    white-space: normal;
+  }
+
+  .players-dynamic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .player-card-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer-content {
+    gap: 35px;
+  }
+}
+
+@media (max-width: 800px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .header-brand {
+    width: 100%;
+  }
+
+  .header-search {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .header-search input {
+    flex: 1;
+  }
+
+  header nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .header-tagline {
+    white-space: normal;
+  }
+
+  main section {
+    padding: 20px;
+  }
+
+  .players-dynamic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .top-rated-player {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat-row {
+  grid-template-columns: minmax(75px, 1fr) minmax(40px, 2fr) 30px;
+  gap: 8px;
+ }
+}
+
+@media (max-width: 500px) {
+  .main-footer {
+    padding: 35px 6% 20px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-tagline {
+    justify-content: flex-start;
+  }
+}
+
+
+/* Controles de tema e idioma */
+
+
+/* Controles de tema e idioma */
+
+.header-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.header-control {
+  position: relative;
+}
+
+.header-control summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface-bg);
+  color: var(--text-primary);
+  cursor: pointer;
+  list-style: none;
+  white-space: nowrap;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.header-control summary::-webkit-details-marker {
+  display: none;
+}
+
+.header-control summary:hover,
+.header-control[open] summary {
+  background: var(--surface-hover);
+  border-color: var(--accent-color);
+}
+
+.header-control summary:focus-visible,
+.control-dropdown button:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 3px;
+}
+
+.control-arrow {
+  color: var(--accent-color);
+  font-size: 0.8rem;
+}
+
+.control-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 1100;
+  display: flex;
+  flex-direction: column;
+  min-width: 165px;
+  padding: 6px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.control-dropdown button {
+  width: 100%;
+  padding: 11px 12px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-primary);
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.control-dropdown button:hover {
+  background: var(--surface-hover);
+  color: var(--accent-color);
+}
+
+@media (max-width: 700px) {
+  .header-controls {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+}
+
+
+
+/* Botón flotante para volver al inicio */
+.back-to-top {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 1000;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--accent-color);
+  border-radius: 50%;
+
+  background-color: var(--accent-color);
+  color: var(--header-bg);
+
+  font-size: 1.6rem;
+  font-weight: 700;
+  line-height: 1;
+
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgb(0 0 0 / 20%);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+@media (max-width: 500px) {
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .welcome-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 400px) {
+  .player-card {
+    padding: 14px;
+    gap: 12px;
+  }
+
+  .stats-chart {
+    padding: 12px;
+  }
+
+  .stat-row {
+    grid-template-columns: minmax(65px, 1fr) minmax(35px, 2fr) 28px;
+    gap: 6px;
+  }
+
+  .stat-row span,
+  .stat-row strong {
+    font-size: 0.8rem;
+  }
+}
+

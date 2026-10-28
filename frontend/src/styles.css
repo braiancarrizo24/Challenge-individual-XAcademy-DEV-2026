@@ -12,15 +12,21 @@
   --accent-color: #00c8ff;
 }
 
+
+
 :root[data-theme='light'] {
   color-scheme: light;
-  --page-bg: #f1f5f9;
-  --header-bg: #ffffff;
-  --surface-bg: #ffffff;
-  --surface-hover: #e2e8f0;
-  --text-primary: #0f172a;
-  --text-secondary: #64748b;
-  --text-link: #334155;
-  --border-color: #cbd5e1;
-  --accent-color: #0284c7;
+
+  --page-bg: #F2F2F2;
+  --header-bg: #FFFFFF;
+  --surface-bg: #FFFFFF;
+  --surface-hover: #E7E7E7;
+
+  --text-primary: #242424;
+  --text-secondary: #666666;
+  --text-link: #383838;
+
+  --border-color: #D5D5D5;
+  --accent-color: #F05454;
 }
+

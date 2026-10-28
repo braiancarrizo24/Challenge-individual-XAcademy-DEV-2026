@@ -9,7 +9,7 @@ type Language = 'es' | 'en';
 @Component({
   imports: [RouterLink, EditionSelector],
   selector: 'app-home',
-  styleUrl: './home.css',
+  styleUrls: ['./home.css', './home-responsive.css'],
   templateUrl: './home.html',
 })
 export class Home implements OnInit {

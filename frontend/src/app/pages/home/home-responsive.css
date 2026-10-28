@@ -1,0 +1,139 @@
+@media (max-width: 1100px) {
+  header {
+    flex-wrap: wrap;
+    gap: 20px;
+    padding-right: 32px;
+  }
+
+  header nav {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    margin-right: 0;
+  }
+
+  .header-tagline {
+    white-space: normal;
+  }
+
+  .players-dynamic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .player-card-main {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .footer-content {
+    gap: 35px;
+  }
+}
+
+@media (max-width: 800px) {
+  .footer-content {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .footer-brand {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+  }
+
+  .header-brand {
+    width: 100%;
+  }
+
+  .header-search {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+  }
+
+  .header-search input {
+    flex: 1;
+  }
+
+  header nav {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 16px;
+  }
+
+  .header-tagline {
+    white-space: normal;
+  }
+
+  main section {
+    padding: 20px;
+  }
+
+  .players-dynamic {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .top-rated-player {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .stat-row {
+  grid-template-columns: minmax(75px, 1fr) minmax(40px, 2fr) 30px;
+  gap: 8px;
+ }
+}
+
+@media (max-width: 500px) {
+  .main-footer {
+    padding: 35px 6% 20px;
+  }
+
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .footer-brand {
+    grid-column: auto;
+  }
+
+  .footer-tagline {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .header-controls {
+    margin-left: 0;
+    flex-wrap: wrap;
+  }
+}
+
+@media (max-width: 500px) {
+  .back-to-top {
+    right: 16px;
+    bottom: 16px;
+    width: 44px;
+    height: 44px;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .welcome-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
+  }
+}
+
+@media (max-width: 400px) {
+  .player-card {
+    padding: 14px;
+    gap: 12px;
+  }
+}
