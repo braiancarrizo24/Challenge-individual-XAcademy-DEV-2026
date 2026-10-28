@@ -1,15 +1,15 @@
 :root {
   color-scheme: dark;
 
-  --page-bg: #0f172a;
-  --header-bg: #121826;
-  --surface-bg: #1e293b;
-  --surface-hover: #334155;
+  --page-bg: #121212;
+  --header-bg: #181818;
+  --surface-bg: #242424;
+  --surface-hover: #303030;
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-link: #cbd5e1;
   --border-color: #334155;
-  --accent-color: #00c8ff;
+  --accent-color: #22C55E;
 }
 
 :root[data-theme='light'] {
@@ -210,7 +210,7 @@ header nav > a:hover {
 }
 
 .dropdown-menu a:hover {
-  background: var(--surface-hover);
+  background: transparent;
   color: var(--accent-color);
 }
 
@@ -793,7 +793,7 @@ main section > a:focus-visible {
 }
 
 .control-dropdown button:hover {
-  background: var(--surface-hover);
+  background: transparent;
   color: var(--accent-color);
 }
 

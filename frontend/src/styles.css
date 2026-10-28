@@ -1,15 +1,16 @@
 /* You can add global styles to this file, and also import other style files */
 :root {
   color-scheme: dark;
-  --page-bg: #0f172a;
-  --header-bg: #121826;
-  --surface-bg: #1e293b;
-  --surface-hover: #334155;
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-link: #cbd5e1;
-  --border-color: #334155;
-  --accent-color: #00c8ff;
+
+  --page-bg: #121212;
+  --header-bg: #181818;
+  --surface-bg: #242424;
+  --surface-hover: #303030;
+  --text-primary: #F5F5F5;
+  --text-secondary: #B3B3B3;
+  --text-link: #B3B3B3;
+  --border-color: #3A3A3A;
+  --accent-color: #22C55E;
 }
 
 
