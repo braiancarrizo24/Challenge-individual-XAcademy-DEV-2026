@@ -7,19 +7,27 @@ USE fifa_stats;
 
 CREATE TABLE IF NOT EXISTS players (
   id INT AUTO_INCREMENT PRIMARY KEY,
+  source_player_id INT NOT NULL,
   name VARCHAR(150) NOT NULL,
   nationality VARCHAR(100) NULL,
-  gender VARCHAR(20) NULL
+  gender VARCHAR(20) NOT NULL,
+
+  CONSTRAINT uq_source_player_gender
+    UNIQUE (source_player_id, gender)
 ) ENGINE=InnoDB;
 
 CREATE TABLE IF NOT EXISTS player_editions (
   id INT AUTO_INCREMENT PRIMARY KEY,
   player_id INT NOT NULL,
   edition INT NOT NULL,
+  fifa_update INT NOT NULL,
   age INT NULL,
   club VARCHAR(150) NULL,
   position VARCHAR(80) NULL,
   rating INT NULL,
+  potential INT NULL,
+  value_eur BIGINT NULL,
+  wage_eur BIGINT NULL,
 
   CONSTRAINT uq_player_edition
     UNIQUE (player_id, edition),

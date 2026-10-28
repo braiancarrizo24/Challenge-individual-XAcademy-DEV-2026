@@ -16,3 +16,6 @@
 # Sistema operativo
 .DS_Store
 Thumbs.db
+
+# Datasets FIFA (archivos CSV pesados)
+data/

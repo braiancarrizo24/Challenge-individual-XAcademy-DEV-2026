@@ -12,12 +12,15 @@ import { PlayerEntity } from './player.entity';
 import { PlayerSkillEntity } from './player-skill.entity';
 
 @Entity('player_editions')
-@Index(['playerId', 'edition'], { unique: true })
+@Index(
+  ['playerId', 'edition', 'fifaUpdate'],
+  { unique: true },
+)
 export class PlayerEditionEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ name: 'player_id' })
+  @Column({ name: 'player_id', type: 'int' })
   playerId: number;
 
   @ManyToOne(
@@ -28,8 +31,11 @@ export class PlayerEditionEntity {
   @JoinColumn({ name: 'player_id' })
   player: PlayerEntity;
 
-  @Column({ type: 'int' })
+  @Column({ name: 'fifa_version', type: 'int' })
   edition: number;
+
+  @Column({ name: 'fifa_update', type: 'int' })
+  fifaUpdate: number;
 
   @Column({ type: 'int', nullable: true })
   age: number | null;
@@ -42,9 +48,28 @@ export class PlayerEditionEntity {
 
   @Column({ type: 'int', nullable: true })
   rating: number | null;
+
+  @Column({ type: 'int', nullable: true })
+  potential: number | null;
+
+  @Column({
+    name: 'value_eur',
+    type: 'bigint',
+    nullable: true,
+  })
+  valueEur: string | null;
+
+  @Column({
+    name: 'wage_eur',
+    type: 'bigint',
+    nullable: true,
+  })
+  wageEur: string | null;
+
   @OneToMany(
     () => PlayerSkillEntity,
     (skill) => skill.playerEdition,
   )
   skills: PlayerSkillEntity[];
 }
+
