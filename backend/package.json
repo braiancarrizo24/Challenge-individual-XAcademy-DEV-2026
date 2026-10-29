@@ -7,6 +7,10 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
+    "import:validate": "tsx scripts/import-fifa.ts",
+    "import:players": "tsx scripts/import-fifa.ts --import-players",
+    "import:editions": "tsx scripts/import-fifa.ts --import-editions",
+    "import:skills": "tsx scripts/import-fifa.ts --import-skills",
     "deploy": "nest deploy",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
@@ -51,6 +55,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "tsx": "^4.23.15",
     "typescript": "^6.0.2"
   }
 }

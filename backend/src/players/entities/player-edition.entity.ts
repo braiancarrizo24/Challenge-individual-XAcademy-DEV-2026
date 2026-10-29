@@ -12,10 +12,8 @@ import { PlayerEntity } from './player.entity';
 import { PlayerSkillEntity } from './player-skill.entity';
 
 @Entity('player_editions')
-@Index(
-  ['playerId', 'edition', 'fifaUpdate'],
-  { unique: true },
-)
+@Index(['playerId', 'edition'], { unique: true })
+
 export class PlayerEditionEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -31,7 +29,7 @@ export class PlayerEditionEntity {
   @JoinColumn({ name: 'player_id' })
   player: PlayerEntity;
 
-  @Column({ name: 'fifa_version', type: 'int' })
+  @Column({ name: 'edition', type: 'int' })
   edition: number;
 
   @Column({ name: 'fifa_update', type: 'int' })
