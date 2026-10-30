@@ -1,6 +1,9 @@
-
-
-import { Component, OnInit, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   Players,
@@ -16,6 +19,7 @@ import {
 })
 export class PlayersList implements OnInit {
   private readonly playersService = inject(Players);
+  private readonly changeDetector = inject(ChangeDetectorRef);
 
   players: Player[] = [];
   loading = true;
@@ -34,24 +38,33 @@ export class PlayersList implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.playersService.getPlayers(this.currentPage, this.pageSize).subscribe({
-      next: (response: PlayersResponse) => {
-        console.log('Jugadores recibidos:', response.data.length);
+    this.playersService
+      .getPlayers(this.currentPage, this.pageSize)
+      .subscribe({
+        next: (response: PlayersResponse) => {
+          console.log('Respuesta completa de la API:', response);
 
-        this.players = response.data;
-        this.totalPlayers = response.total;
-        this.currentPage = response.page;
-        this.pageSize = response.limit;
-        this.totalPages = response.totalPages;
+          this.players = response.data;
+          this.totalPlayers = response.total;
+          this.currentPage = response.page;
+          this.pageSize = response.limit;
+          this.totalPages = response.totalPages;
+          this.loading = false;
 
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al cargar jugadores:', err);
-        this.error = 'No se pudieron cargar los jugadores.';
-        this.loading = false;
-      },
-    });
+          this.changeDetector.detectChanges();
+
+          console.log('Jugadores disponibles:', this.players.length);
+          console.log('Estado de carga:', this.loading);
+        },
+        error: (err) => {
+          console.error('Error al cargar jugadores:', err);
+
+          this.error = 'No se pudieron cargar los jugadores.';
+          this.loading = false;
+
+          this.changeDetector.detectChanges();
+        },
+      });
   }
 
   previousPage(): void {
@@ -68,4 +81,6 @@ export class PlayersList implements OnInit {
     }
   }
 }
+
+
 
