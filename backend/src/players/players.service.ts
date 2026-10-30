@@ -11,12 +11,31 @@ export class PlayersService {
     private readonly playersRepository: Repository<PlayerEntity>,
   ) {}
 
-  findAll(): Promise<PlayerEntity[]> {
-    return this.playersRepository.find({
+  async findAll(page = 1, limit = 25): Promise<{
+    data: PlayerEntity[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
+    const safePage = Math.max(1, page);
+    const safeLimit = Math.min(100, Math.max(1, limit));
+
+    const [data, total] = await this.playersRepository.findAndCount({
       order: {
         name: 'ASC',
       },
+      skip: (safePage - 1) * safeLimit,
+      take: safeLimit,
     });
+
+    return {
+      data,
+      total,
+      page: safePage,
+      limit: safeLimit,
+      totalPages: Math.ceil(total / safeLimit),
+    };
   }
 }
 

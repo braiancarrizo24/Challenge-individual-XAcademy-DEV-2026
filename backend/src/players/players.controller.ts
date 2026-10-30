@@ -1,7 +1,6 @@
 
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
 import { PlayersService } from './players.service';
-import { PlayerEntity } from './entities/player.entity';
 
 @Controller('players')
 export class PlayersController {
@@ -10,7 +9,11 @@ export class PlayersController {
   ) {}
 
   @Get()
-  findAll(): Promise<PlayerEntity[]> {
-    return this.playersService.findAll();
+  findAll(
+    @Query('page', new ParseIntPipe({ optional: true })) page = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 25,
+  ) {
+    return this.playersService.findAll(page, limit);
   }
 }
+

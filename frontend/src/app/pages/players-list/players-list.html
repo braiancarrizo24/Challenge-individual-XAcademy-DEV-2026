@@ -1,1 +1,58 @@
-<p>players-list works!</p>
+
+
+<section class="players-page">
+  <header class="page-header">
+    <h1>Jugadores de FIFA</h1>
+    <p>Explorá los jugadores registrados en la base de datos.</p>
+  </header>
+
+  @if (loading) {
+    <p class="status-message">Cargando jugadores...</p>
+  } @else if (error) {
+    <p class="error-message">{{ error }}</p>
+  } @else {
+    <p class="results-count">
+      Jugadores encontrados: {{ totalPlayers }}
+    </p>
+
+    <div class="players-grid">
+      @for (player of players; track player.id) {
+        <article class="player-card">
+          <h2>{{ player.name }}</h2>
+          <p>
+            <strong>Nacionalidad:</strong>
+            {{ player.nationality || 'No disponible' }}
+          </p>
+          <p>
+            <strong>Género:</strong>
+            {{ player.gender }}
+          </p>
+        </article>
+      } @empty {
+        <p>No se encontraron jugadores.</p>
+      }
+    </div>
+
+    <nav class="pagination" aria-label="Paginación de jugadores">
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1 || loading"
+      >
+        Anterior
+      </button>
+
+      <span>
+        Página {{ currentPage }} de {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages || loading"
+      >
+        Siguiente
+      </button>
+    </nav>
+  }
+</section>
