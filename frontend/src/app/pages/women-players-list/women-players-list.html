@@ -1,2 +1,89 @@
-<h1>Listado de jugadoras</h1>
-<p>Esta es la página de jugadoras de FIFA Stats.</p>
+
+<section class="players-page">
+  <header class="page-header">
+    <h1>Jugadoras de FIFA</h1>
+    <p>
+      Explorá las futbolistas registradas en la base de datos
+      y consultá sus estadísticas de FIFA.
+    </p>
+  </header>
+
+  @if (loading) {
+    <p class="status-message">Cargando jugadoras...</p>
+  } @else if (error) {
+    <p class="error-message">{{ error }}</p>
+  } @else {
+    <p class="results-count">
+      Jugadoras encontradas: {{ totalPlayers }}
+    </p>
+
+    <div class="players-grid">
+      @for (player of players; track player.id) {
+        <article class="player-card">
+          <header class="player-card-header">
+            <h2>{{ player.name }}</h2>
+            <span class="player-rating">
+              {{ player.rating ?? 'N/D' }}
+            </span>
+          </header>
+
+          <p>
+            <strong>Nacionalidad:</strong>
+            {{ player.nationality || 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Edición:</strong>
+            FIFA {{ player.edition }}
+          </p>
+
+          <p>
+            <strong>Edad:</strong>
+            {{ player.age ?? 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Club:</strong>
+            {{ player.club || 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Posición:</strong>
+            {{ player.position || 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Potencial:</strong>
+            {{ player.potential ?? 'No disponible' }}
+          </p>
+        </article>
+      } @empty {
+        <p>No se encontraron jugadoras.</p>
+      }
+    </div>
+
+    <nav class="pagination" aria-label="Paginación de jugadoras">
+      <button
+        type="button"
+        (click)="previousPage()"
+        [disabled]="currentPage === 1 || loading"
+      >
+        Anterior
+      </button>
+
+      <span>
+        Página {{ currentPage }} de {{ totalPages }}
+      </span>
+
+      <button
+        type="button"
+        (click)="nextPage()"
+        [disabled]="currentPage >= totalPages || loading"
+      >
+        Siguiente
+      </button>
+    </nav>
+  }
+</section>
+
+

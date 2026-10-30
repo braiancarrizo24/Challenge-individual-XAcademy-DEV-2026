@@ -1,3 +1,4 @@
+
 import {
   Component,
   OnInit,
@@ -39,11 +40,9 @@ export class PlayersList implements OnInit {
     this.error = '';
 
     this.playersService
-      .getPlayers(this.currentPage, this.pageSize)
+      .getPlayers(this.currentPage, this.pageSize, 'male')
       .subscribe({
         next: (response: PlayersResponse) => {
-          console.log('Respuesta completa de la API:', response);
-
           this.players = response.data;
           this.totalPlayers = response.total;
           this.currentPage = response.page;
@@ -53,8 +52,8 @@ export class PlayersList implements OnInit {
 
           this.changeDetector.detectChanges();
 
-          console.log('Jugadores disponibles:', this.players.length);
-          console.log('Estado de carga:', this.loading);
+          console.log('Jugadores recibidos:', this.players.length);
+          console.log('Total de jugadores:', this.totalPlayers);
         },
         error: (err) => {
           console.error('Error al cargar jugadores:', err);
@@ -81,6 +80,7 @@ export class PlayersList implements OnInit {
     }
   }
 }
+
 
 
 

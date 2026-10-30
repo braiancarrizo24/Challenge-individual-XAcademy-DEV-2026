@@ -1,9 +1,83 @@
-import { Component } from '@angular/core';
+
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
+import { CommonModule } from '@angular/common';
+import {
+  Players,
+  Player,
+  PlayersResponse,
+} from '../../core/services/players';
 
 @Component({
-  imports: [],
   selector: 'app-women-players-list',
-  styleUrl: './women-players-list.css',
+  imports: [CommonModule],
   templateUrl: './women-players-list.html',
+  styleUrl: './women-players-list.css',
 })
-export class WomenPlayersList {}
+export class WomenPlayersList implements OnInit {
+  private readonly playersService = inject(Players);
+  private readonly changeDetector = inject(ChangeDetectorRef);
+
+  players: Player[] = [];
+  loading = true;
+  error = '';
+
+  currentPage = 1;
+  pageSize = 25;
+  totalPlayers = 0;
+  totalPages = 0;
+
+  ngOnInit(): void {
+    this.loadPlayers();
+  }
+
+  loadPlayers(): void {
+    this.loading = true;
+    this.error = '';
+
+    this.playersService
+      .getPlayers(this.currentPage, this.pageSize, 'female')
+      .subscribe({
+        next: (response: PlayersResponse) => {
+          this.players = response.data;
+          this.totalPlayers = response.total;
+          this.currentPage = response.page;
+          this.pageSize = response.limit;
+          this.totalPages = response.totalPages;
+          this.loading = false;
+
+          this.changeDetector.detectChanges();
+
+          console.log('Jugadoras recibidas:', this.players.length);
+          console.log('Total de jugadoras:', this.totalPlayers);
+        },
+        error: (err) => {
+          console.error('Error al cargar jugadoras:', err);
+
+          this.error = 'No se pudieron cargar las jugadoras.';
+          this.loading = false;
+
+          this.changeDetector.detectChanges();
+        },
+      });
+  }
+
+  previousPage(): void {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.loadPlayers();
+    }
+  }
+
+  nextPage(): void {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.loadPlayers();
+    }
+  }
+}
+

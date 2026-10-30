@@ -9,6 +9,15 @@ export interface Player {
   name: string;
   nationality: string | null;
   gender: string;
+  edition: number;
+  fifaUpdate: number;
+  age: number | null;
+  club: string | null;
+  position: string | null;
+  rating: number | null;
+  potential: number | null;
+  valueEur: string | null;
+  wageEur: string | null;
 }
 
 export interface PlayersResponse {
@@ -19,6 +28,8 @@ export interface PlayersResponse {
   totalPages: number;
 }
 
+export type PlayerGender = 'male' | 'female';
+
 @Injectable({
   providedIn: 'root',
 })
@@ -26,12 +37,22 @@ export class Players {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/players';
 
-  getPlayers(page = 1, limit = 25): Observable<PlayersResponse> {
-    const params = new HttpParams()
+  getPlayers(
+    page = 1,
+    limit = 25,
+    gender?: PlayerGender,
+  ): Observable<PlayersResponse> {
+    let params = new HttpParams()
       .set('page', page)
       .set('limit', limit);
+
+    if (gender) {
+      params = params.set('gender', gender);
+    }
 
     return this.http.get<PlayersResponse>(this.apiUrl, { params });
   }
 }
+
+
 
