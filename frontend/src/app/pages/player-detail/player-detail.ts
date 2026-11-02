@@ -1,12 +1,24 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
+import {
+  CommonModule,
+} from '@angular/common';
+import {
+  Component,
+  OnInit,
+  inject,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Players, PlayerDetail } from '../../core/services/players';
+import {
+  Players,
+  PlayerDetail,
+  PlayerEdition,
+} from '../../core/services/players';
+import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
 
 @Component({
   selector: 'app-player-detail',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, EditionSelector],
   templateUrl: './player-detail.html',
   styleUrl: './player-detail.css',
 })
@@ -18,6 +30,22 @@ export class PlayerDetailComponent implements OnInit {
   player: PlayerDetail | null = null;
   loading = true;
   error = '';
+
+  selectedEditions: number[] = [];
+
+  get availableEditions(): number[] {
+    return this.player?.editions.map((edition) => edition.edition) ?? [];
+  }
+
+  get selectedEditionData(): PlayerEdition[] {
+    if (!this.player) {
+      return [];
+    }
+
+    return this.player.editions.filter((edition) =>
+      this.selectedEditions.includes(edition.edition)
+    );
+  }
 
   ngOnInit(): void {
     const id = Number(this.route.snapshot.paramMap.get('id'));
@@ -32,6 +60,15 @@ export class PlayerDetailComponent implements OnInit {
     this.playersService.getPlayerById(id).subscribe({
       next: (player) => {
         this.player = player;
+
+        const latestEdition = Math.max(
+          ...player.editions.map((edition) => edition.edition)
+        );
+
+        this.selectedEditions = player.editions.length > 0
+          ? [latestEdition]
+          : [];
+
         this.loading = false;
         this.changeDetector.detectChanges();
       },
@@ -44,4 +81,10 @@ export class PlayerDetailComponent implements OnInit {
       },
     });
   }
+
+  onEditionsChange(editions: number[]): void {
+    this.selectedEditions = editions;
+    this.changeDetector.detectChanges();
+  }
 }
+
