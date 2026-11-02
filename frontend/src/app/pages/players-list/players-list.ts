@@ -4,6 +4,7 @@ import {
   OnInit,
   inject,
   ChangeDetectorRef,
+  effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -11,36 +12,46 @@ import {
   Player,
   PlayersResponse,
 } from '../../core/services/players';
+import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
+import { EditionService } from '../../core/services/edition';
 
 @Component({
   selector: 'app-players-list',
-  imports: [CommonModule],
+  imports: [CommonModule, EditionSelector],
   templateUrl: './players-list.html',
   styleUrl: './players-list.css',
 })
 export class PlayersList implements OnInit {
   private readonly playersService = inject(Players);
   private readonly changeDetector = inject(ChangeDetectorRef);
+  private readonly editionService = inject(EditionService);
 
   players: Player[] = [];
   loading = true;
   error = '';
 
   currentPage = 1;
-  pageSize = 25;
+  pageSize = 30;
   totalPlayers = 0;
   totalPages = 0;
 
-  ngOnInit(): void {
-    this.loadPlayers();
+  constructor() {
+    effect(() => {
+      const edition = this.editionService.selectedEdition();
+
+      this.currentPage = 1;
+      this.loadPlayers(edition);
+    });
   }
 
-  loadPlayers(): void {
+  ngOnInit(): void {}
+
+  loadPlayers(edition: number): void {
     this.loading = true;
     this.error = '';
 
     this.playersService
-      .getPlayers(this.currentPage, this.pageSize, 'male')
+      .getPlayers(this.currentPage, this.pageSize, 'male', edition)
       .subscribe({
         next: (response: PlayersResponse) => {
           this.players = response.data;
@@ -52,6 +63,7 @@ export class PlayersList implements OnInit {
 
           this.changeDetector.detectChanges();
 
+          console.log('Edición seleccionada:', edition);
           console.log('Jugadores recibidos:', this.players.length);
           console.log('Total de jugadores:', this.totalPlayers);
         },
@@ -69,17 +81,21 @@ export class PlayersList implements OnInit {
   previousPage(): void {
     if (this.currentPage > 1) {
       this.currentPage--;
-      this.loadPlayers();
+      this.loadPlayers(this.editionService.selectedEdition());
     }
   }
 
   nextPage(): void {
     if (this.currentPage < this.totalPages) {
       this.currentPage++;
-      this.loadPlayers();
+      this.loadPlayers(this.editionService.selectedEdition());
     }
   }
 }
+
+
+
+
 
 
 

@@ -37,22 +37,29 @@ export class Players {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/players';
 
-  getPlayers(
-    page = 1,
-    limit = 25,
-    gender?: PlayerGender,
-  ): Observable<PlayersResponse> {
-    let params = new HttpParams()
-      .set('page', page)
-      .set('limit', limit);
 
-    if (gender) {
-      params = params.set('gender', gender);
-    }
+getPlayers(
+  page = 1,
+  limit = 30,
+  gender?: PlayerGender,
+  edition?: number,
+): Observable<PlayersResponse> {
+  let params = new HttpParams()
+    .set('page', page)
+    .set('limit', limit);
 
-    return this.http.get<PlayersResponse>(this.apiUrl, { params });
+  if (gender) {
+    params = params.set('gender', gender);
   }
+
+  if (edition !== undefined) {
+    params = params.set('edition', edition);
+  }
+
+  return this.http.get<PlayersResponse>(this.apiUrl, { params });
 }
+}
+
 
 
 

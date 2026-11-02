@@ -4,6 +4,8 @@
     <p>Explorá los jugadores registrados en la base de datos.</p>
   </header>
 
+   <app-edition-selector />
+
   @if (loading) {
     <p class="status-message">Cargando jugadores...</p>
   } @else if (error) {

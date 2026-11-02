@@ -10,11 +10,11 @@ export class PlayersController {
   @Get()
   findAll(
     @Query('page', new ParseIntPipe({ optional: true })) page = 1,
-    @Query('limit', new ParseIntPipe({ optional: true })) limit = 25,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit = 30,
     @Query('gender') gender?: string,
+    @Query('edition', new ParseIntPipe({ optional: true })) edition?: number,
   ) {
-    return this.playersService.findAll(page, limit, gender);
+    return this.playersService.findAll(page, limit, gender, edition);
   }
 }
-
 
