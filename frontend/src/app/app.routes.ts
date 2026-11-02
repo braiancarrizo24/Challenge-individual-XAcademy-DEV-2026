@@ -10,6 +10,7 @@ import { Teams } from './pages/teams/teams';
 import { Leagues } from './pages/leagues/leagues';
 import { Nationalities } from './pages/nationalities/nationalities';
 import { YoungTalents } from './pages/young-talents/young-talents';
+import { PlayerDetailComponent } from './pages/player-detail/player-detail';
 
 export const routes: Routes = [
   {
@@ -21,6 +22,12 @@ export const routes: Routes = [
     path: 'players',
     component: PlayersList,
   },
+
+  {
+  path: 'players/:id',
+  component: PlayerDetailComponent,
+  },
+  
   {
     path: 'players-women',
     component: WomenPlayersList,

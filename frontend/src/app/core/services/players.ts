@@ -28,6 +28,34 @@ export interface PlayersResponse {
   totalPages: number;
 }
 
+export interface PlayerSkill {
+  skill: string;
+  value: string | number;
+}
+
+export interface PlayerEdition {
+  id: number;
+  edition: number;
+  fifaUpdate: number;
+  age: number | null;
+  club: string | null;
+  position: string | null;
+  rating: number | null;
+  potential: number | null;
+  valueEur: string | null;
+  wageEur: string | null;
+  skills: PlayerSkill[];
+}
+
+export interface PlayerDetail {
+  id: number;
+  sourcePlayerId: number;
+  name: string;
+  nationality: string | null;
+  gender: string;
+  editions: PlayerEdition[];
+}
+
 export type PlayerGender = 'male' | 'female';
 
 @Injectable({
@@ -37,28 +65,33 @@ export class Players {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = 'http://localhost:3000/players';
 
+  getPlayers(
+    page = 1,
+    limit = 30,
+    gender?: PlayerGender,
+    edition?: number,
+  ): Observable<PlayersResponse> {
+    let params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit);
 
-getPlayers(
-  page = 1,
-  limit = 30,
-  gender?: PlayerGender,
-  edition?: number,
-): Observable<PlayersResponse> {
-  let params = new HttpParams()
-    .set('page', page)
-    .set('limit', limit);
+    if (gender) {
+      params = params.set('gender', gender);
+    }
 
-  if (gender) {
-    params = params.set('gender', gender);
+    if (edition !== undefined) {
+      params = params.set('edition', edition);
+    }
+
+    return this.http.get<PlayersResponse>(this.apiUrl, { params });
   }
 
-  if (edition !== undefined) {
-    params = params.set('edition', edition);
+  getPlayerById(id: number): Observable<PlayerDetail> {
+    return this.http.get<PlayerDetail>(`${this.apiUrl}/${id}`);
   }
+}
 
-  return this.http.get<PlayersResponse>(this.apiUrl, { params });
-}
-}
+
 
 
 

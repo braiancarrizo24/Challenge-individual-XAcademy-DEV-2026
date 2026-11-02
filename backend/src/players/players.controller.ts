@@ -1,4 +1,11 @@
-import { Controller, Get, Query, ParseIntPipe } from '@nestjs/common';
+
+import {
+  Controller,
+  Get,
+  Query,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { PlayersService } from './players.service';
 
 @Controller('players')
@@ -16,5 +23,13 @@ export class PlayersController {
   ) {
     return this.playersService.findAll(page, limit, gender, edition);
   }
+
+  @Get(':id')
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.playersService.findOne(id);
+  }
 }
+
 

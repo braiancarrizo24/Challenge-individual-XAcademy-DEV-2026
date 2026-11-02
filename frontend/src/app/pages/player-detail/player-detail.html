@@ -1,0 +1,65 @@
+
+<main class="player-detail">
+
+  <section *ngIf="loading" class="loading">
+    <p>Cargando información del jugador...</p>
+  </section>
+
+  <section *ngIf="!loading && error" class="error">
+    <p>{{ error }}</p>
+  </section>
+
+  
+  <ng-container *ngIf="!loading && player">
+
+    <section class="player-header">
+      <div>
+        <h1>{{ player.name }}</h1>
+        <p>{{ player.nationality || 'Nacionalidad no disponible' }}</p>
+      </div>
+
+      <span class="gender">
+        {{ player.gender === 'male' ? 'Jugador' : 'Jugadora' }}
+      </span>
+    </section>
+
+  
+    <section class="editions-section">
+      <h2>Historial de ediciones FIFA</h2>
+
+      <div *ngIf="player.editions.length === 0">
+        <p>No hay ediciones disponibles para este jugador.</p>
+      </div>
+
+      <div class="editions-list">
+        <article
+          class="edition-card"
+          *ngFor="let edition of player.editions"
+        >
+          <h3>FIFA {{ edition.edition }}</h3>
+
+          <p>Actualización: {{ edition.fifaUpdate }}</p>
+          <p>Edad: {{ edition.age ?? 'No disponible' }}</p>
+          <p>Club: {{ edition.club || 'No disponible' }}</p>
+          <p>Posición: {{ edition.position || 'No disponible' }}</p>
+          <p>Valoración: {{ edition.rating ?? 'No disponible' }}</p>
+          <p>Potencial: {{ edition.potential ?? 'No disponible' }}</p>
+
+          <h4>Habilidades</h4>
+
+          <div *ngIf="edition.skills.length === 0">
+            <p>No hay habilidades disponibles.</p>
+          </div>
+
+          <ul *ngIf="edition.skills.length > 0">
+            <li *ngFor="let skill of edition.skills">
+              {{ skill.skill }}: {{ skill.value }}
+            </li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+  </ng-container>
+
+</main>

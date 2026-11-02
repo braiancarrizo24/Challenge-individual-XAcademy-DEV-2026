@@ -22,7 +22,12 @@
       @for (player of players; track player.id) {
         <article class="player-card">
           <header class="player-card-header">
-            <h2>{{ player.name }}</h2>
+            <h2>
+              <a [routerLink]="['/players', player.id]">
+                {{ player.name }}
+              </a>
+            </h2>
+            
             <span class="player-rating">
               {{ player.rating ?? 'N/D' }}
             </span>

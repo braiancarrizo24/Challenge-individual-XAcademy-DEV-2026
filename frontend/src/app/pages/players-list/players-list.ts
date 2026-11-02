@@ -1,4 +1,3 @@
-
 import {
   Component,
   OnInit,
@@ -7,6 +6,7 @@ import {
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import {
   Players,
   Player,
@@ -17,7 +17,7 @@ import { EditionService } from '../../core/services/edition';
 
 @Component({
   selector: 'app-players-list',
-  imports: [CommonModule, EditionSelector],
+  imports: [CommonModule, EditionSelector, RouterLink],
   templateUrl: './players-list.html',
   styleUrl: './players-list.css',
 })
@@ -92,6 +92,7 @@ export class PlayersList implements OnInit {
     }
   }
 }
+
 
 
 
