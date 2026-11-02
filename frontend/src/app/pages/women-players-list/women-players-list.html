@@ -1,4 +1,3 @@
-
 <section class="players-page">
   <header class="page-header">
     <h1>Jugadoras de FIFA</h1>
@@ -7,6 +6,8 @@
       y consultá sus estadísticas de FIFA.
     </p>
   </header>
+
+  <app-edition-selector />
 
   @if (loading) {
     <p class="status-message">Cargando jugadoras...</p>
@@ -62,28 +63,33 @@
       }
     </div>
 
-    <nav class="pagination" aria-label="Paginación de jugadoras">
-      <button
-        type="button"
-        (click)="previousPage()"
-        [disabled]="currentPage === 1 || loading"
-      >
-        Anterior
-      </button>
+    @if (totalPlayers > 0) {
+      <nav class="pagination" aria-label="Paginación de jugadoras">
+        <button
+          type="button"
+          (click)="previousPage()"
+          [disabled]="currentPage === 1 || loading"
+        >
+          Anterior
+        </button>
 
-      <span>
-        Página {{ currentPage }} de {{ totalPages }}
-      </span>
+        <span>
+          Página {{ currentPage }} de {{ totalPages }}
+        </span>
 
-      <button
-        type="button"
-        (click)="nextPage()"
-        [disabled]="currentPage >= totalPages || loading"
-      >
-        Siguiente
-      </button>
-    </nav>
+        <button
+          type="button"
+          (click)="nextPage()"
+          [disabled]="currentPage >= totalPages || loading"
+        >
+          Siguiente
+        </button>
+      </nav>
+    }
   }
 </section>
+
+
+
 
 

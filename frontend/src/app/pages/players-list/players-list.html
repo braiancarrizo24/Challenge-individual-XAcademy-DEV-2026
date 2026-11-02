@@ -18,7 +18,10 @@
     <div class="players-grid">
       @for (player of players; track player.id) {
         <article class="player-card">
-          <h2>{{ player.name }}</h2>
+          <h2> <a [routerLink]="['/players', player.id]">{{ player.name }}</a>
+             
+          </h2>
+         
           <p>
             <strong>Nacionalidad:</strong>
             {{ player.nationality || 'No disponible' }}
