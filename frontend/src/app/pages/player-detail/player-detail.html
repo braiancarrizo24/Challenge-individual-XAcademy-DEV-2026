@@ -1,4 +1,61 @@
 
+<header id="top">
+  <div class="header-brand">
+    <h1><span>FIFA</span> Stats</h1>
+  </div>
+
+  <form
+    class="header-search"
+    role="search"
+    (submit)="$event.preventDefault()"
+  >
+    <input
+      type="search"
+      placeholder="Buscar jugador..."
+      aria-label="Buscar jugador o jugadora"
+    />
+    <button type="submit" aria-label="Buscar">⌕</button>
+  </form>
+
+  <nav>
+    <p class="header-tagline">
+      Estadísticas del fútbol en cada edición de FIFA
+    </p>
+
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/players">Jugadores</a>
+    <a routerLink="/players-women">Jugadoras</a>
+    <a routerLink="/teams">Equipos</a>
+
+    <details class="nav-dropdown">
+      <summary>Más secciones</summary>
+      <div class="dropdown-menu">
+        <a routerLink="/comparisons">Comparativas</a>
+        <a routerLink="/leagues">Ligas</a>
+        <a routerLink="/nationalities">Nacionalidades</a>
+        <a routerLink="/young-talents">Jóvenes promesas</a>
+      </div>
+    </details>
+
+    <div class="header-controls">
+      <div class="header-control control-dropdown">
+        <button type="button" (click)="setTheme(false)" aria-label="Tema claro">
+          ☀️
+        </button>
+        <button type="button" (click)="setTheme(true)" aria-label="Tema oscuro">
+          🌙
+        </button>
+      </div>
+
+      <div class="header-control control-dropdown">
+        <button type="button" (click)="toggleLanguage()">
+          {{ language === 'es' ? 'ES' : 'EN' }}
+        </button>
+      </div>
+    </div>
+  </nav>
+</header>
+
 <main class="player-detail">
 
   <section *ngIf="loading" class="loading">
@@ -230,6 +287,63 @@
   </ng-container>
 
 </main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <h2>⚽ FIFA Stats</h2>
+      <p>
+        Explorá estadísticas, rendimiento y evolución de jugadores
+        y jugadoras a través de distintas ediciones de FIFA.
+      </p>
+
+      <div class="footer-info">
+        <p>📊 Datos organizados por edición</p>
+        <p>📅 Ediciones FIFA 2015–2023</p>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <h3>Explorar</h3>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/players">Jugadores</a>
+      <a routerLink="/players-women">Jugadoras</a>
+    </div>
+
+    <div class="footer-features">
+      <h3>Estadísticas</h3>
+      <p>Media general</p>
+      <p>Atributos individuales</p>
+      <p>Evolución por edición</p>
+      <p>Nacionalidades</p>
+    </div>
+  </div>
+
+  <div class="footer-tagline">
+    <span>🏆</span>
+    <div>
+      <h3>Cada edición, una historia.</h3>
+      <p>Un proyecto educativo de desarrollo web.</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 FIFA Stats · Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<button
+  type="button"
+  class="back-to-top"
+  (click)="scrollToTop()"
+  aria-label="Volver al inicio de la página"
+  title="Volver arriba"
+>
+  ↑
+</button>
+
+
+
 
 
 

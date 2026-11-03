@@ -7,7 +7,7 @@ import {
   inject,
   ChangeDetectorRef,
 } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { BaseChartDirective } from 'ng2-charts';
 import {
   Chart,
@@ -32,7 +32,7 @@ import { EditionService } from '../../core/services/edition';
 @Component({
   selector: 'app-player-detail',
   standalone: true,
-  imports: [CommonModule, EditionSelector, BaseChartDirective],
+  imports: [CommonModule, RouterLink, EditionSelector, BaseChartDirective],
   templateUrl: './player-detail.html',
   styleUrl: './player-detail.css',
 })
@@ -55,6 +55,9 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
   private readonly changeDetector = inject(ChangeDetectorRef);
 
   private themeObserver?: MutationObserver;
+
+  isDarkMode = true;
+  language: 'es' | 'en' = 'es';
 
   player: PlayerDetail | null = null;
   loading = true;
@@ -289,6 +292,9 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.loadPreferences();
+    this.applyTheme();
+
     this.radarChartOptions = this.getRadarChartOptions();
 
     this.themeObserver = new MutationObserver(() => {
@@ -336,6 +342,50 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  setTheme(dark: boolean): void {
+    this.isDarkMode = dark;
+    this.applyTheme();
+
+    localStorage.setItem(
+      'fifa-stats-theme',
+      dark ? 'dark' : 'light'
+    );
+  }
+
+  applyTheme(): void {
+    document.documentElement.setAttribute(
+      'data-theme',
+      this.isDarkMode ? 'dark' : 'light'
+    );
+  }
+
+  loadPreferences(): void {
+    const savedTheme = localStorage.getItem('fifa-stats-theme');
+    const savedLanguage = localStorage.getItem('fifa-stats-language');
+
+    this.isDarkMode = savedTheme
+      ? savedTheme === 'dark'
+      : true;
+
+    this.language = savedLanguage === 'en' ? 'en' : 'es';
+  }
+
+  toggleLanguage(): void {
+    this.language = this.language === 'es' ? 'en' : 'es';
+
+    localStorage.setItem(
+      'fifa-stats-language',
+      this.language
+    );
+  }
+
+  scrollToTop(): void {
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth',
+    });
+  }
+
   updateChartsTheme(): void {
     this.radarChartOptions = this.getRadarChartOptions();
     this.changeDetector.detectChanges();
@@ -356,6 +406,8 @@ function primaryColor(): string {
     .getPropertyValue('--surface-bg')
     .trim();
 }
+
+
 
 
 
