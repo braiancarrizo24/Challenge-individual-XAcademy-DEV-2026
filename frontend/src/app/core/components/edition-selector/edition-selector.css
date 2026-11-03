@@ -81,6 +81,36 @@
   cursor: not-allowed;
 }
 
+.edition-selector.vertical .edition-carousel {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.edition-selector.vertical .edition-options {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+}
+
+.edition-selector.vertical .edition-options button {
+  width: 100%;
+  min-height: 32px;
+  padding: 5px 9px;
+  border-radius: 6px;
+  font-size: 0.82rem;
+  text-align: left;
+}
+
+.edition-selector.vertical .carousel-arrow {
+  align-self: center;
+  flex-basis: 30px;
+  width: 30px;
+  min-height: 30px;
+  font-size: 1.2rem;
+  transform: rotate(90deg);
+}
+
 @media (max-width: 400px) {
   .edition-carousel {
     gap: 4px;

@@ -1,3 +1,4 @@
+
 <main class="player-detail">
 
   <section *ngIf="loading" class="loading">
@@ -10,66 +11,229 @@
 
   <ng-container *ngIf="!loading && player">
 
-    <section class="player-header">
-      <div>
+    <section class="player-header" *ngIf="selectedEditionData.length > 0">
+      <div class="player-identity">
+        <span class="gender">
+          {{ player.gender === 'male' ? 'JUGADOR' : 'JUGADORA' }}
+        </span>
         <h1>{{ player.name }}</h1>
-        <p>{{ player.nationality || 'Nacionalidad no disponible' }}</p>
+        <p class="player-nationality">
+          {{ player.nationality || 'Nacionalidad no disponible' }}
+        </p>
       </div>
 
-      <span class="gender">
-        {{ player.gender === 'male' ? 'Jugador' : 'Jugadora' }}
-      </span>
+      <div class="player-overview">
+        <div class="player-rating">
+          <span class="overview-label">VALORACIÓN</span>
+          <strong>{{ selectedEditionData[0].rating ?? '—' }}</strong>
+        </div>
+        <div class="player-potential">
+          <span class="overview-label">POTENCIAL</span>
+          <strong>{{ selectedEditionData[0].potential ?? '—' }}</strong>
+        </div>
+      </div>
+
+      <div class="player-information">
+        <div class="information-item">
+          <span>EDAD</span>
+          <strong>{{ selectedEditionData[0].age ?? 'No disponible' }}</strong>
+        </div>
+        <div class="information-item">
+          <span>CLUB</span>
+          <strong>{{ selectedEditionData[0].club || 'No disponible' }}</strong>
+        </div>
+        <div class="information-item">
+          <span>POSICIÓN</span>
+          <strong>{{ selectedEditionData[0].position || 'No disponible' }}</strong>
+        </div>
+        <div class="information-item">
+          <span>EDICIÓN</span>
+          <strong>FIFA {{ selectedEditionData[0].edition }}</strong>
+        </div>
+      </div>
     </section>
 
     <section class="editions-section">
-      <h2>Seleccioná las ediciones para consultar</h2>
-
-      <app-edition-selector
-        [localMode]="true"
-        [availableEditions]="availableEditions"
-        [(selectedEditions)]="selectedEditions"
-        
-      />
-
-      <p>
-        Ediciones seleccionadas: {{ selectedEditions.length }} de 3
+      <h2>Edición del perfil</h2>
+      <p class="section-description">
+        Seleccioná una edición para consultar los datos y estadísticas del jugador.
       </p>
+      <app-edition-selector [availableEditions]="availableEditions" />
+    </section>
 
-      <div *ngIf="selectedEditions.length === 0">
-        <p>Seleccioná al menos una edición para consultar las estadísticas.</p>
-      </div>
+    <section *ngIf="selectedEditionData.length > 0" class="player-analysis-layout">
 
-      <div class="editions-list">
-        <article
-          class="edition-card"
-          *ngFor="let edition of selectedEditionData"
-        >
-          <h3>FIFA {{ edition.edition }}</h3>
+      <aside class="comparison-sidebar">
+        <div class="comparison-header">
+          <h2>Comparador histórico</h2>
+          <p>
+            Seleccioná hasta tres ediciones para consultar su evolución.
+          </p>
+        </div>
 
-          <p>Actualización: {{ edition.fifaUpdate }}</p>
-          <p>Edad: {{ edition.age ?? 'No disponible' }}</p>
-          <p>Club: {{ edition.club || 'No disponible' }}</p>
-          <p>Posición: {{ edition.position || 'No disponible' }}</p>
-          <p>Valoración: {{ edition.rating ?? 'No disponible' }}</p>
-          <p>Potencial: {{ edition.potential ?? 'No disponible' }}</p>
+        <app-edition-selector
+          [localMode]="true"
+          [availableEditions]="availableEditions"
+          [(selectedEditions)]="comparisonEditions"
+        />
 
-          <h4>Habilidades</h4>
+        <p class="comparison-counter">
+          Ediciones seleccionadas:
+          {{ comparisonEditions.length }} de 3
+        </p>
+      </aside>
 
-          <div *ngIf="edition.skills.length === 0">
-            <p>No hay habilidades disponibles.</p>
+      <section class="player-statistics">
+        <div class="statistics-heading">
+          <h2>Estadísticas del jugador</h2>
+          <span>FIFA {{ selectedEditionData[0].edition }}</span>
+        </div>
+
+        <article class="edition-card">
+
+          <div class="radar-chart-section">
+            <h4>Estadísticas principales</h4>
+            <div class="radar-chart-container">
+              <canvas
+                baseChart
+                [type]="'radar'"
+                [data]="getRadarChartData(selectedEditionData[0])"
+                [options]="radarChartOptions"
+              ></canvas>
+            </div>
           </div>
 
-          <ul *ngIf="edition.skills.length > 0">
-            <li *ngFor="let skill of edition.skills">
-              {{ skill.skill }}: {{ skill.value }}
-            </li>
-          </ul>
+          <section class="skills-section">
+            <h4>Habilidades del jugador</h4>
+
+            <div class="skill-groups">
+              <article class="skill-group" *ngFor="let group of skillGroups">
+                <h5>{{ group.title }}</h5>
+
+                <div class="skill-item" *ngFor="let skill of group.skills">
+                  <div class="skill-information">
+                    <span>{{ skill.label }}</span>
+                    <strong>
+                      {{ getSkillValue(selectedEditionData[0], skill.key) ?? '—' }}
+                    </strong>
+                  </div>
+
+                  <div class="skill-bar">
+                    <div
+                      class="skill-bar-fill"
+                      [style.width.%]="getSkillValue(selectedEditionData[0], skill.key) ?? 0"
+                    ></div>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </section>
+
         </article>
+      </section>
+
+    </section>
+
+    <section *ngIf="selectedEditionData.length > 0" class="comparison-results-section">
+
+      <div class="comparison-results-heading">
+        <div>
+          <h2>Comparación entre ediciones</h2>
+          <p>
+            Compará los datos históricos y la evolución de las habilidades del jugador.
+          </p>
+        </div>
       </div>
+
+      <div *ngIf="comparisonEditionData.length === 0" class="comparison-empty">
+        <p>
+          Seleccioná una o más ediciones en el comparador para ver sus datos.
+        </p>
+      </div>
+
+      <div *ngIf="comparisonEditionData.length > 0" class="comparison-results">
+
+        <article
+          *ngFor="let edition of comparisonEditionData"
+          class="comparison-edition"
+        >
+          <div class="comparison-card-heading">
+            <div>
+              <span class="comparison-edition-label">EDICIÓN</span>
+              <h3>FIFA {{ edition.edition }}</h3>
+            </div>
+
+            <div class="comparison-rating">
+              <strong>{{ edition.rating ?? '—' }}</strong>
+              <span>VALORACIÓN</span>
+            </div>
+          </div>
+
+          <div class="comparison-information">
+            <div class="comparison-stat">
+              <span>Potencial</span>
+              <strong>{{ edition.potential ?? '—' }}</strong>
+            </div>
+            <div class="comparison-stat">
+              <span>Edad</span>
+              <strong>{{ edition.age ?? '—' }}</strong>
+            </div>
+            <div class="comparison-stat">
+              <span>Club</span>
+              <strong>{{ edition.club || 'No disponible' }}</strong>
+            </div>
+            <div class="comparison-stat">
+              <span>Posición</span>
+              <strong>{{ edition.position || 'No disponible' }}</strong>
+            </div>
+          </div>
+
+          <div class="comparison-radar-section">
+            <h4>Rendimiento general</h4>
+            <div class="comparison-radar-container">
+              <canvas
+                baseChart
+                [type]="'radar'"
+                [data]="getRadarChartData(edition)"
+                [options]="radarChartOptions"
+              ></canvas>
+            </div>
+          </div>
+
+          <div class="comparison-bars-section">
+            <h4>Estadísticas principales</h4>
+
+            <div class="comparison-bar-item" *ngFor="let stat of radarChartLabels; let i = index">
+              <div class="comparison-bar-information">
+                <span>{{ stat }}</span>
+                <strong>{{ getOverallSkillValue(edition, i) ?? '—' }}</strong>
+              </div>
+
+              <div class="comparison-bar-track">
+                <div
+                  class="comparison-bar-fill"
+                  [style.width.%]="getOverallSkillValue(edition, i) ?? 0"
+                ></div>
+              </div>
+            </div>
+          </div>
+
+        </article>
+
+      </div>
+    </section>
+
+    <section *ngIf="selectedEditionData.length === 0" class="no-editions">
+      <p>No hay datos disponibles para la edición seleccionada.</p>
     </section>
 
   </ng-container>
 
 </main>
+
+
+
+
+
 
 
