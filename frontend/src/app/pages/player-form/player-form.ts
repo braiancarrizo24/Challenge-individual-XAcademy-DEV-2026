@@ -2,7 +2,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   Players,
   CreatePlayerPayload,
@@ -19,6 +19,7 @@ import {
 export class PlayerForm {
   private readonly playersService = inject(Players);
   private readonly router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
 
   name = '';
   gender: PlayerGender = 'male';
@@ -36,6 +37,14 @@ export class PlayerForm {
 
   loading = false;
   error = '';
+
+  constructor() {
+    const gender = this.route.snapshot.queryParamMap.get('gender');
+
+    if (gender === 'male' || gender === 'female') {
+      this.gender = gender;
+    }
+  }
 
   skillGroups = [
     {
@@ -176,3 +185,4 @@ export class PlayerForm {
     ]);
   }
 }
+

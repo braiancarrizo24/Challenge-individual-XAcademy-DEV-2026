@@ -5,6 +5,14 @@
       Explorá las futbolistas registradas en la base de datos
       y consultá sus estadísticas de FIFA.
     </p>
+
+    <a
+      class="create-player-button"
+      [routerLink]="['/players/new']"
+      [queryParams]="{ gender: 'female' }"
+    >
+      + Crear jugadora
+    </a>
   </header>
 
   <app-edition-selector />
