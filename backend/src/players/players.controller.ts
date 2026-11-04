@@ -1,4 +1,3 @@
-
 import {
   Controller,
   Get,
@@ -23,6 +22,7 @@ export class PlayersController {
     @Query('name') name?: string,
     @Query('club') club?: string,
     @Query('position') position?: string,
+    @Query('exportAll') exportAll?: string,
   ) {
     return this.playersService.findAll(
       page,
@@ -32,6 +32,7 @@ export class PlayersController {
       name,
       club,
       position,
+      exportAll === 'true',
     );
   }
 
@@ -42,6 +43,7 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
+
 
 
 

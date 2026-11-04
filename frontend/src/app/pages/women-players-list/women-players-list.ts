@@ -28,6 +28,7 @@ export class WomenPlayersList {
 
   players: Player[] = [];
   loading = true;
+  exporting = false;
   error = '';
 
   currentPage = 1;
@@ -95,6 +96,94 @@ export class WomenPlayersList {
 
           this.error = 'No se pudieron cargar las jugadoras.';
           this.loading = false;
+
+          this.changeDetector.detectChanges();
+        },
+      });
+  }
+
+  exportCsv(): void {
+    if (this.exporting) {
+      return;
+    }
+
+    this.exporting = true;
+    this.error = '';
+
+    this.playersService
+      .getPlayersForExport(
+        'female',
+        this.editionService.selectedEdition(),
+        this.appliedName,
+        this.appliedClub,
+        this.appliedPosition,
+      )
+      .subscribe({
+        next: (response: PlayersResponse) => {
+          const headers = [
+            'Nombre',
+            'Género',
+            'Nacionalidad',
+            'Edición FIFA',
+            'Actualización FIFA',
+            'Edad',
+            'Club',
+            'Posición',
+            'Calificación',
+            'Potencial',
+            'Valor EUR',
+            'Salario EUR',
+          ];
+
+          const rows = response.data.map((player) => [
+            player.name,
+            player.gender,
+            player.nationality,
+            player.edition,
+            player.fifaUpdate,
+            player.age,
+            player.club,
+            player.position,
+            player.rating,
+            player.potential,
+            player.valueEur,
+            player.wageEur,
+          ]);
+
+          const escapeCsvValue = (value: string | number | null): string => {
+            const text = value === null ? '' : String(value);
+            return `"${text.replace(/"/g, '""')}"`;
+          };
+
+          const csvContent = [
+            headers.map(escapeCsvValue).join(','),
+            ...rows.map((row) => row.map(escapeCsvValue).join(',')),
+          ].join('\r\n');
+
+          const blob = new Blob(
+            ['\uFEFF', csvContent],
+            { type: 'text/csv;charset=utf-8;' },
+          );
+
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+
+          link.href = url;
+          link.download = 'jugadoras-fifa.csv';
+          link.click();
+
+          URL.revokeObjectURL(url);
+
+          this.exporting = false;
+          this.changeDetector.detectChanges();
+
+          console.log('Jugadoras exportadas:', response.total);
+        },
+        error: (err) => {
+          console.error('Error al exportar jugadoras:', err);
+
+          this.error = 'No se pudo generar el archivo CSV.';
+          this.exporting = false;
 
           this.changeDetector.detectChanges();
         },

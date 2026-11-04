@@ -1,4 +1,3 @@
-
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -102,10 +101,41 @@ export class Players {
     return this.http.get<PlayersResponse>(this.apiUrl, { params });
   }
 
+  getPlayersForExport(
+    gender: PlayerGender,
+    edition?: number,
+    name?: string,
+    club?: string,
+    position?: string,
+  ): Observable<PlayersResponse> {
+    let params = new HttpParams()
+      .set('gender', gender)
+      .set('exportAll', 'true');
+
+    if (edition !== undefined) {
+      params = params.set('edition', edition);
+    }
+
+    if (name?.trim()) {
+      params = params.set('name', name.trim());
+    }
+
+    if (club?.trim()) {
+      params = params.set('club', club.trim());
+    }
+
+    if (position?.trim()) {
+      params = params.set('position', position.trim());
+    }
+
+    return this.http.get<PlayersResponse>(this.apiUrl, { params });
+  }
+
   getPlayerById(id: number): Observable<PlayerDetail> {
     return this.http.get<PlayerDetail>(`${this.apiUrl}/${id}`);
   }
 }
+
 
 
 

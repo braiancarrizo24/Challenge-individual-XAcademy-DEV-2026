@@ -1,4 +1,3 @@
-
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -19,6 +18,7 @@ export class PlayersService {
     name?: string,
     club?: string,
     position?: string,
+    exportAll = false,
   ): Promise<{
     data: any[];
     total: number;
@@ -28,7 +28,10 @@ export class PlayersService {
   }> {
     const safePage = Math.max(1, page);
     const safeLimit = Math.min(30, Math.max(1, limit));
-    const offset = (safePage - 1) * safeLimit;
+    const offset = exportAll ? 0 : (safePage - 1) * safeLimit;
+
+    const paginationSql = exportAll ? '' : 'LIMIT ? OFFSET ?';
+    const paginationParams = exportAll ? [] : [safeLimit, offset];
 
     const safeGender =
       gender === 'male' || gender === 'female' ? gender : null;
@@ -110,14 +113,13 @@ export class PlayersService {
           AND pe.edition BETWEEN 15 AND 23
           AND ${filters}
         ORDER BY p.name ASC, pe.edition DESC, pe.fifa_update DESC, pe.id DESC
-        LIMIT ? OFFSET ?
+        ${paginationSql}
         `,
         [
           safeGender,
           safeGender,
           ...filterParams,
-          safeLimit,
-          offset,
+          ...paginationParams,
         ],
       );
     } else if (safeEdition !== null) {
@@ -161,14 +163,13 @@ export class PlayersService {
         WHERE (? IS NULL OR p.gender = ?)
           AND pe.edition = ?
         ORDER BY p.name ASC, p.id ASC, pe.fifa_update DESC, pe.id DESC
-        LIMIT ? OFFSET ?
+        ${paginationSql}
         `,
         [
           safeGender,
           safeGender,
           safeEdition,
-          safeLimit,
-          offset,
+          ...paginationParams,
         ],
       );
     } else {
@@ -232,13 +233,12 @@ export class PlayersService {
         FROM (${latestVersionQuery}) AS ranked
         WHERE ranked.version_number = 1
         ORDER BY ranked.name ASC, ranked.id ASC
-        LIMIT ? OFFSET ?
+        ${paginationSql}
         `,
         [
           safeGender,
           safeGender,
-          safeLimit,
-          offset,
+          ...paginationParams,
         ],
       );
     }
@@ -248,9 +248,9 @@ export class PlayersService {
     return {
       data,
       total,
-      page: safePage,
-      limit: safeLimit,
-      totalPages: Math.ceil(total / safeLimit),
+      page: exportAll ? 1 : safePage,
+      limit: exportAll ? total : safeLimit,
+      totalPages: exportAll ? (total > 0 ? 1 : 0) : Math.ceil(total / safeLimit),
     };
   }
 
@@ -330,6 +330,7 @@ export class PlayersService {
     };
   }
 }
+
 
 
 
