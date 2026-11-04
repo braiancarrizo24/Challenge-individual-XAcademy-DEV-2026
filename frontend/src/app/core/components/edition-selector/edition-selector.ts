@@ -37,6 +37,10 @@ export class EditionSelector implements OnChanges {
   }
 
   get visibleEditions(): number[] {
+    if (this.localMode) {
+      return this.editions;
+    }
+
     return this.editions.slice(
       this.visibleStartIndex,
       this.visibleStartIndex + this.visibleEditionsCount
@@ -44,19 +48,24 @@ export class EditionSelector implements OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (
-      this.localMode &&
-      (changes['availableEditions'] || changes['selectedEditions'])
-    ) {
-      const selectedEdition = this.selectedEditions[0];
-      const selectedIndex = this.editions.indexOf(selectedEdition);
+    if (this.localMode) {
+      return;
+    }
 
-      if (selectedIndex !== -1) {
-        this.visibleStartIndex = Math.min(
-          selectedIndex,
-          Math.max(0, this.editions.length - this.visibleEditionsCount)
-        );
-      }
+    if (changes['localMode'] || changes['availableEditions']) {
+      this.showSelectedEdition();
+    }
+  }
+
+  showSelectedEdition(): void {
+    const selectedEdition = this.editionService.selectedEdition();
+    const selectedIndex = this.editions.indexOf(selectedEdition);
+
+    if (selectedIndex !== -1) {
+      this.visibleStartIndex = Math.min(
+        selectedIndex,
+        Math.max(0, this.editions.length - this.visibleEditionsCount)
+      );
     }
   }
 
@@ -71,6 +80,7 @@ export class EditionSelector implements OnChanges {
   selectEdition(edition: number): void {
     if (!this.localMode) {
       this.editionService.selectEdition(edition);
+      this.showSelectedEdition();
       return;
     }
 

@@ -3,15 +3,17 @@
   [class.vertical]="localMode"
 >
   <div class="edition-carousel">
-    <button
-      type="button"
-      class="carousel-arrow"
-      aria-label="Ver ediciones anteriores"
-      (click)="previousEditions()"
-      [disabled]="visibleStartIndex === 0"
-    >
-      &#8249;
-    </button>
+    @if (!localMode) {
+      <button
+        type="button"
+        class="carousel-arrow"
+        aria-label="Ver ediciones anteriores"
+        (click)="previousEditions()"
+        [disabled]="visibleStartIndex === 0"
+      >
+        &#8249;
+      </button>
+    }
 
     <div class="edition-options">
       @for (edition of visibleEditions; track edition) {
@@ -19,6 +21,7 @@
           type="button"
           [class.selected]="isSelected(edition)"
           [attr.aria-pressed]="isSelected(edition)"
+          [disabled]="localMode && !isSelected(edition) && selectedEditions.length >= maxSelectedEditions"
           (click)="selectEdition(edition)"
         >
           FIFA {{ edition }}
@@ -26,16 +29,17 @@
       }
     </div>
 
-    <button
-      type="button"
-      class="carousel-arrow"
-      aria-label="Ver ediciones siguientes"
-      (click)="nextEditions()"
-      [disabled]="visibleStartIndex >= editions.length - visibleEditionsCount"
-    >
-      &#8250;
-    </button>
+    @if (!localMode) {
+      <button
+        type="button"
+        class="carousel-arrow"
+        aria-label="Ver ediciones siguientes"
+        (click)="nextEditions()"
+        [disabled]="visibleStartIndex >= editions.length - visibleEditionsCount"
+      >
+        &#8250;
+      </button>
+    }
   </div>
 </section>
-
 
