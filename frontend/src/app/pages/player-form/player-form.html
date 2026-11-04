@@ -1,1 +1,269 @@
-<p>player-form works!</p>
+
+<header class="form-header">
+  <div class="header-brand">
+    <h1><span>FIFA</span> Stats</h1>
+  </div>
+
+  <nav>
+    <a routerLink="/">Inicio</a>
+    <a routerLink="/players">Jugadores</a>
+    <a routerLink="/players-women">Jugadoras</a>
+  </nav>
+</header>
+
+<main class="player-form-page">
+  <section class="form-heading">
+    <div>
+      <span class="form-eyebrow">FIFA STATS</span>
+      <h1>Crear jugador</h1>
+      <p>Incorporá un nuevo perfil y registrá sus estadísticas en una edición FIFA.</p>
+    </div>
+  </section>
+
+  <form class="player-form" (ngSubmit)="createPlayer()">
+
+    <section class="form-section">
+      <div class="section-heading">
+        <span class="section-number">01</span>
+        <div>
+          <h2>Información personal</h2>
+          <p>Datos generales del jugador o jugadora.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="form-field">
+          <span>Nombre completo *</span>
+          <input
+            type="text"
+            name="name"
+            [(ngModel)]="name"
+            placeholder="Ej. Lionel Messi"
+            required
+            maxlength="150"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Género *</span>
+          <select name="gender" [(ngModel)]="gender" required>
+            <option value="male">Masculino</option>
+            <option value="female">Femenino</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Nacionalidad</span>
+          <input
+            type="text"
+            name="nationality"
+            [(ngModel)]="nationality"
+            placeholder="Ej. Argentina"
+            maxlength="100"
+          />
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-heading">
+        <span class="section-number">02</span>
+        <div>
+          <h2>Edición FIFA inicial</h2>
+          <p>Información correspondiente a la primera edición registrada.</p>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <label class="form-field">
+          <span>Edición FIFA *</span>
+          <select name="edition" [(ngModel)]="edition" required>
+            <option [ngValue]="15">FIFA 15</option>
+            <option [ngValue]="16">FIFA 16</option>
+            <option [ngValue]="17">FIFA 17</option>
+            <option [ngValue]="18">FIFA 18</option>
+            <option [ngValue]="19">FIFA 19</option>
+            <option [ngValue]="20">FIFA 20</option>
+            <option [ngValue]="21">FIFA 21</option>
+            <option [ngValue]="22">FIFA 22</option>
+            <option [ngValue]="23">FIFA 23</option>
+          </select>
+        </label>
+
+        <label class="form-field">
+          <span>Actualización FIFA</span>
+          <input
+            type="number"
+            name="fifaUpdate"
+            [(ngModel)]="fifaUpdate"
+            min="0"
+            step="1"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Edad</span>
+          <input
+            type="number"
+            name="age"
+            [(ngModel)]="age"
+            min="1"
+            step="1"
+            placeholder="Ej. 25"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Club</span>
+          <input
+            type="text"
+            name="club"
+            [(ngModel)]="club"
+            placeholder="Ej. Inter Miami"
+            maxlength="150"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Posición</span>
+          <input
+            type="text"
+            name="position"
+            [(ngModel)]="position"
+            placeholder="Ej. ST, MC, DC..."
+            maxlength="80"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Valoración general</span>
+          <input
+            type="number"
+            name="rating"
+            [(ngModel)]="rating"
+            min="0"
+            max="99"
+            step="1"
+            placeholder="0 - 99"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Potencial</span>
+          <input
+            type="number"
+            name="potential"
+            [(ngModel)]="potential"
+            min="0"
+            max="99"
+            step="1"
+            placeholder="0 - 99"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Valor de mercado (EUR)</span>
+          <input
+            type="text"
+            name="valueEur"
+            [(ngModel)]="valueEur"
+            inputmode="numeric"
+            placeholder="Ej. 1500000"
+          />
+        </label>
+
+        <label class="form-field">
+          <span>Salario (EUR)</span>
+          <input
+            type="text"
+            name="wageEur"
+            [(ngModel)]="wageEur"
+            inputmode="numeric"
+            placeholder="Ej. 8000"
+          />
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-heading">
+        <span class="section-number">03</span>
+        <div>
+          <h2>Estadísticas del jugador</h2>
+          <p>Completá los atributos principales utilizados en el gráfico radar.</p>
+        </div>
+      </div>
+
+      <div class="main-skills-grid">
+        <label class="main-skill-card" *ngFor="let skill of skillGroups[0].skills; let i = index">
+          <span>{{ skill.label }}</span>
+          <input
+            type="number"
+            [name]="skill.key"
+            [(ngModel)]="skillValues[skill.key]"
+            min="0"
+            max="100"
+            step="1"
+          />
+          <small>0 - 100</small>
+        </label>
+      </div>
+    </section>
+
+    <section class="form-section">
+      <div class="section-heading">
+        <span class="section-number">04</span>
+        <div>
+          <h2>Habilidades individuales</h2>
+          <p>Configurá cada habilidad para representar el rendimiento del jugador.</p>
+        </div>
+      </div>
+
+      <div class="individual-skills-grid">
+        <article
+          class="individual-skill-group"
+          *ngFor="let group of skillGroups.slice(1)"
+        >
+          <h3>{{ group.title }}</h3>
+
+          <label class="skill-input" *ngFor="let skill of group.skills">
+            <span>{{ skill.label }}</span>
+            <input
+              type="number"
+              [name]="skill.key"
+              [(ngModel)]="skillValues[skill.key]"
+              min="0"
+              max="100"
+              step="1"
+            />
+          </label>
+        </article>
+      </div>
+    </section>
+
+    <div class="form-error" *ngIf="error">
+      {{ error }}
+    </div>
+
+    <div class="form-actions">
+      <button
+        type="button"
+        class="cancel-button"
+        (click)="cancel()"
+        [disabled]="loading"
+      >
+        Cancelar
+      </button>
+
+      <button
+        type="submit"
+        class="submit-button"
+        [disabled]="loading"
+      >
+        {{ loading ? 'Creando jugador...' : 'Crear jugador' }}
+      </button>
+    </div>
+
+  </form>
+</main>
+

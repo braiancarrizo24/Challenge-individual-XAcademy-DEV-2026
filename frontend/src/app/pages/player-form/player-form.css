@@ -1,0 +1,348 @@
+
+:host {
+  display: block;
+  min-height: 100vh;
+  background: var(--page-bg, #10141d);
+  color: var(--text-primary, #f5f6fa);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 20px 6%;
+  background: var(--surface-bg, #191f2b);
+  border-bottom: 1px solid var(--border-color, #30394a);
+}
+
+.header-brand h1 {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 800;
+}
+
+.header-brand h1 span {
+  color: var(--accent-color, #38d39f);
+}
+
+.form-header nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+}
+
+.form-header nav a {
+  color: var(--text-secondary, #aeb8c9);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.form-header nav a:hover {
+  color: var(--accent-color, #38d39f);
+}
+
+.player-form-page {
+  width: min(1180px, 92%);
+  margin: 0 auto;
+  padding: 55px 0 80px;
+}
+
+.form-heading {
+  margin-bottom: 35px;
+}
+
+.form-eyebrow {
+  color: var(--accent-color, #38d39f);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.form-heading h1 {
+  margin: 10px 0;
+  font-size: clamp(30px, 5vw, 42px);
+  font-weight: 800;
+}
+
+.form-heading p {
+  margin: 0;
+  color: var(--text-secondary, #aeb8c9);
+  line-height: 1.6;
+}
+
+.player-form {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-section {
+  padding: 30px;
+  background: var(--surface-bg, #191f2b);
+  border: 1px solid var(--border-color, #30394a);
+  border-radius: 16px;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.section-number {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--accent-color, #38d39f) 15%, transparent);
+  color: var(--accent-color, #38d39f);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.section-heading h2 {
+  margin: 0 0 5px;
+  font-size: 20px;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--text-secondary, #aeb8c9);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 22px;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  min-width: 0;
+}
+
+.form-field > span {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-secondary, #aeb8c9);
+}
+
+.form-field input,
+.form-field select,
+.skill-input input,
+.main-skill-card input {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 12px 14px;
+  border: 1px solid var(--border-color, #30394a);
+  border-radius: 9px;
+  outline: none;
+  background: var(--page-bg, #10141d);
+  color: var(--text-primary, #f5f6fa);
+  font: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.skill-input input:focus,
+.main-skill-card input:focus {
+  border-color: var(--accent-color, #38d39f);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-color, #38d39f) 15%, transparent);
+}
+
+.form-field input::placeholder {
+  color: var(--text-secondary, #aeb8c9);
+  opacity: 0.6;
+}
+
+.main-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.main-skill-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px;
+  background: var(--page-bg, #10141d);
+  border: 1px solid var(--border-color, #30394a);
+  border-radius: 12px;
+}
+
+.main-skill-card span {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.main-skill-card input {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--accent-color, #38d39f);
+}
+
+.main-skill-card small {
+  color: var(--text-secondary, #aeb8c9);
+  font-size: 11px;
+}
+
+.individual-skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.individual-skill-group {
+  padding: 22px;
+  background: var(--page-bg, #10141d);
+  border: 1px solid var(--border-color, #30394a);
+  border-radius: 12px;
+}
+
+.individual-skill-group h3 {
+  margin: 0 0 18px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border-color, #30394a);
+  color: var(--accent-color, #38d39f);
+  font-size: 16px;
+}
+
+.skill-input {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 13px;
+}
+
+.skill-input:last-child {
+  margin-bottom: 0;
+}
+
+.skill-input span {
+  color: var(--text-secondary, #aeb8c9);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.skill-input input {
+  width: 85px;
+  flex-shrink: 0;
+  padding: 9px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.form-error {
+  padding: 14px 18px;
+  border: 1px solid #d9534f;
+  border-radius: 9px;
+  background: color-mix(in srgb, #d9534f 12%, transparent);
+  color: #ff8580;
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+  padding-top: 5px;
+}
+
+.form-actions button {
+  min-width: 145px;
+  padding: 13px 22px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.form-actions button:hover:not(:disabled) {
+  transform: translateY(-2px);
+}
+
+.form-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.cancel-button {
+  border: 1px solid var(--border-color, #30394a);
+  background: transparent;
+  color: var(--text-primary, #f5f6fa);
+}
+
+.submit-button {
+  border: 1px solid var(--accent-color, #38d39f);
+  background: var(--accent-color, #38d39f);
+  color: #10141d;
+}
+
+@media (max-width: 850px) {
+  .form-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .main-skills-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 600px) {
+  .form-header {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 18px 5%;
+  }
+
+  .form-header nav {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .player-form-page {
+    width: 92%;
+    padding-top: 35px;
+  }
+
+  .form-section {
+    padding: 20px 16px;
+  }
+
+  .form-grid,
+  .main-skills-grid,
+  .individual-skills-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+  }
+
+  .section-heading h2 {
+    font-size: 17px;
+  }
+
+  .form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
   IsNotEmpty,
+  Matches,
   Max,
   MaxLength,
   Min,
@@ -21,7 +22,7 @@ class UpdateEditionSkillDto {
   @Type(() => Number)
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Max(99)
+  @Max(100)
   value: number;
 }
 
@@ -71,10 +72,12 @@ export class UpdatePlayerEditionDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/^\d{1,19}$/)
   valueEur?: string;
 
   @IsOptional()
   @IsString()
+  @Matches(/^\d{1,19}$/)
   wageEur?: string;
 
   @IsOptional()

@@ -4,13 +4,13 @@ import { Routes } from '@angular/router';
 import { Home } from './pages/home/home';
 import { PlayersList } from './pages/players-list/players-list';
 import { WomenPlayersList } from './pages/women-players-list/women-players-list';
-
 import { Comparisons } from './pages/comparisons/comparisons';
 import { Teams } from './pages/teams/teams';
 import { Leagues } from './pages/leagues/leagues';
 import { Nationalities } from './pages/nationalities/nationalities';
 import { YoungTalents } from './pages/young-talents/young-talents';
 import { PlayerDetailComponent } from './pages/player-detail/player-detail';
+import { PlayerForm } from './pages/player-form/player-form';
 
 export const routes: Routes = [
   {
@@ -22,12 +22,14 @@ export const routes: Routes = [
     path: 'players',
     component: PlayersList,
   },
-
   {
-  path: 'players/:id',
-  component: PlayerDetailComponent,
+    path: 'players/new',
+    component: PlayerForm,
   },
-  
+  {
+    path: 'players/:id',
+    component: PlayerDetailComponent,
+  },
   {
     path: 'players-women',
     component: WomenPlayersList,
@@ -57,5 +59,6 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
+
 
 

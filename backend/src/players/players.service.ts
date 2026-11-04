@@ -1,14 +1,446 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ConflictException,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, DataSource } from 'typeorm';
 import { PlayerEntity } from './entities/player.entity';
+import { PlayerEditionEntity } from './entities/player-edition.entity';
+import { PlayerSkillEntity } from './entities/player-skill.entity';
+import { CreatePlayerDto } from './dto/create-player.dto';
+import { UpdatePlayerDto } from './dto/update-player.dto';
+import { CreatePlayerEditionDto } from './dto/create-player-edition.dto';
+import { UpdatePlayerEditionDto } from './dto/update-player-edition.dto';
 
 @Injectable()
 export class PlayersService {
   constructor(
     @InjectRepository(PlayerEntity)
     private readonly playersRepository: Repository<PlayerEntity>,
+    private readonly dataSource: DataSource,
   ) {}
+
+  async create(dto: CreatePlayerDto): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+    let lockAcquired = false;
+
+    try {
+      await queryRunner.connect();
+
+      const lockResult = await queryRunner.query(
+        `SELECT GET_LOCK(?, 10) AS acquired`,
+        ['fifa_stats_manual_player_id'],
+      );
+
+      lockAcquired = Number(lockResult[0].acquired) === 1;
+
+      if (!lockAcquired) {
+        throw new ConflictException(
+          'No se pudo reservar un identificador. Intentá nuevamente.',
+        );
+      }
+
+      await queryRunner.startTransaction();
+
+      const duplicateSkills = dto.edition.skills
+        .map((skill) => skill.skill.trim().toLowerCase())
+        .filter((skill, index, skills) => skills.indexOf(skill) !== index);
+
+      if (duplicateSkills.length > 0) {
+        throw new BadRequestException(
+          'La edición contiene habilidades repetidas.',
+        );
+      }
+
+      const playerRepository =
+        queryRunner.manager.getRepository(PlayerEntity);
+
+      const editionRepository =
+        queryRunner.manager.getRepository(PlayerEditionEntity);
+
+      const skillRepository =
+        queryRunner.manager.getRepository(PlayerSkillEntity);
+
+      const result = await queryRunner.query(
+        `
+        SELECT COALESCE(MIN(source_player_id), 0) - 1 AS nextId
+        FROM players
+        WHERE gender = ?
+          AND source_player_id < 0
+        `,
+        [dto.gender],
+      );
+
+      const sourcePlayerId = Number(result[0].nextId);
+
+      if (sourcePlayerId < -2147483648) {
+        throw new InternalServerErrorException(
+          'Se agotaron los identificadores disponibles.',
+        );
+      }
+
+      const player = playerRepository.create({
+        sourcePlayerId,
+        name: dto.name.trim(),
+        nationality: dto.nationality?.trim() || null,
+        gender: dto.gender,
+      });
+
+      const savedPlayer = await playerRepository.save(player);
+
+      const edition = editionRepository.create({
+        playerId: savedPlayer.id,
+        edition: dto.edition.edition,
+        fifaUpdate: dto.edition.fifaUpdate,
+        age: dto.edition.age ?? null,
+        club: dto.edition.club?.trim() || null,
+        position: dto.edition.position?.trim() || null,
+        rating: dto.edition.rating ?? null,
+        potential: dto.edition.potential ?? null,
+        valueEur: dto.edition.valueEur ?? null,
+        wageEur: dto.edition.wageEur ?? null,
+      });
+
+      const savedEdition = await editionRepository.save(edition);
+
+      if (dto.edition.skills.length > 0) {
+        const skills = dto.edition.skills.map((skill) =>
+          skillRepository.create({
+            playerEditionId: savedEdition.id,
+            skill: skill.skill.trim(),
+            value: skill.value,
+          }),
+        );
+
+        await skillRepository.save(skills);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return await this.findOne(savedPlayer.id);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof ConflictException ||
+        error instanceof NotFoundException ||
+        error instanceof InternalServerErrorException
+      ) {
+        throw error;
+      }
+
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'ER_DUP_ENTRY'
+      ) {
+        throw new ConflictException(
+          'Ya existe un registro duplicado para este jugador.',
+        );
+      }
+
+      throw error;
+    } finally {
+      if (lockAcquired) {
+        await queryRunner.query(
+          `SELECT RELEASE_LOCK(?)`,
+          ['fifa_stats_manual_player_id'],
+        );
+      }
+
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async update(id: number, dto: UpdatePlayerDto): Promise<any> {
+    const player = await this.playersRepository.findOne({
+      where: { id },
+    });
+
+    if (!player) {
+      throw new NotFoundException('Jugador no encontrado');
+    }
+
+    if (dto.name !== undefined) {
+      player.name = dto.name.trim();
+    }
+
+    if (dto.nationality !== undefined) {
+      player.nationality = dto.nationality.trim() || null;
+    }
+
+    await this.playersRepository.save(player);
+
+    return this.findOne(id);
+  }
+
+  async addEdition(
+    playerId: number,
+    dto: CreatePlayerEditionDto,
+  ): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const playerRepository =
+        queryRunner.manager.getRepository(PlayerEntity);
+
+      const editionRepository =
+        queryRunner.manager.getRepository(PlayerEditionEntity);
+
+      const skillRepository =
+        queryRunner.manager.getRepository(PlayerSkillEntity);
+
+      const player = await playerRepository.findOne({
+        where: { id: playerId },
+      });
+
+      if (!player) {
+        throw new NotFoundException('Jugador no encontrado');
+      }
+
+      const existingEdition = await editionRepository.findOne({
+        where: {
+          playerId,
+          edition: dto.edition,
+        },
+      });
+
+      if (existingEdition) {
+        throw new ConflictException(
+          'El jugador ya tiene registrada esta edición FIFA.',
+        );
+      }
+
+      const duplicateSkills = dto.skills
+        .map((skill) => skill.skill.trim().toLowerCase())
+        .filter((skill, index, skills) => skills.indexOf(skill) !== index);
+
+      if (duplicateSkills.length > 0) {
+        throw new BadRequestException(
+          'La edición contiene habilidades repetidas.',
+        );
+      }
+
+      const edition = editionRepository.create({
+        playerId,
+        edition: dto.edition,
+        fifaUpdate: dto.fifaUpdate,
+        age: dto.age ?? null,
+        club: dto.club?.trim() || null,
+        position: dto.position?.trim() || null,
+        rating: dto.rating ?? null,
+        potential: dto.potential ?? null,
+        valueEur: dto.valueEur ?? null,
+        wageEur: dto.wageEur ?? null,
+      });
+
+      const savedEdition = await editionRepository.save(edition);
+
+      if (dto.skills.length > 0) {
+        const skills = dto.skills.map((skill) =>
+          skillRepository.create({
+            playerEditionId: savedEdition.id,
+            skill: skill.skill.trim(),
+            value: skill.value,
+          }),
+        );
+
+        await skillRepository.save(skills);
+      }
+
+      await queryRunner.commitTransaction();
+
+      return await this.findOne(playerId);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'ER_DUP_ENTRY'
+      ) {
+        throw new ConflictException(
+          'Ya existe una edición o habilidad duplicada.',
+        );
+      }
+
+      throw error;
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
+
+  async updateEdition(
+    playerId: number,
+    editionId: number,
+    dto: UpdatePlayerEditionDto,
+  ): Promise<any> {
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    try {
+      await queryRunner.connect();
+      await queryRunner.startTransaction();
+
+      const playerRepository =
+        queryRunner.manager.getRepository(PlayerEntity);
+
+      const editionRepository =
+        queryRunner.manager.getRepository(PlayerEditionEntity);
+
+      const skillRepository =
+        queryRunner.manager.getRepository(PlayerSkillEntity);
+
+      const player = await playerRepository.findOne({
+        where: { id: playerId },
+      });
+
+      if (!player) {
+        throw new NotFoundException('Jugador no encontrado');
+      }
+
+      const edition = await editionRepository.findOne({
+        where: {
+          id: editionId,
+          playerId,
+        },
+      });
+
+      if (!edition) {
+        throw new NotFoundException(
+          'La edición no existe o no pertenece a este jugador.',
+        );
+      }
+
+      if (dto.skills !== undefined) {
+        const duplicateSkills = dto.skills
+          .map((skill) => skill.skill.trim().toLowerCase())
+          .filter(
+            (skill, index, skills) => skills.indexOf(skill) !== index,
+          );
+
+        if (duplicateSkills.length > 0) {
+          throw new BadRequestException(
+            'La edición contiene habilidades repetidas.',
+          );
+        }
+      }
+
+      if (dto.edition !== undefined) {
+        edition.edition = dto.edition;
+      }
+
+      if (dto.fifaUpdate !== undefined) {
+        edition.fifaUpdate = dto.fifaUpdate;
+      }
+
+      if (dto.age !== undefined) {
+        edition.age = dto.age;
+      }
+
+      if (dto.club !== undefined) {
+        edition.club = dto.club.trim() || null;
+      }
+
+      if (dto.position !== undefined) {
+        edition.position = dto.position.trim() || null;
+      }
+
+      if (dto.rating !== undefined) {
+        edition.rating = dto.rating;
+      }
+
+      if (dto.potential !== undefined) {
+        edition.potential = dto.potential;
+      }
+
+      if (dto.valueEur !== undefined) {
+        edition.valueEur = dto.valueEur;
+      }
+
+      if (dto.wageEur !== undefined) {
+        edition.wageEur = dto.wageEur;
+      }
+
+      await editionRepository.save(edition);
+
+      if (dto.skills !== undefined) {
+        await skillRepository.delete({
+          playerEditionId: editionId,
+        });
+
+        if (dto.skills.length > 0) {
+          const skills = dto.skills.map((skill) =>
+            skillRepository.create({
+              playerEditionId: editionId,
+              skill: skill.skill.trim(),
+              value: skill.value,
+            }),
+          );
+
+          await skillRepository.save(skills);
+        }
+      }
+
+      await queryRunner.commitTransaction();
+
+      return await this.findOne(playerId);
+    } catch (error) {
+      if (queryRunner.isTransactionActive) {
+        await queryRunner.rollbackTransaction();
+      }
+
+      if (
+        error instanceof BadRequestException ||
+        error instanceof ConflictException ||
+        error instanceof NotFoundException
+      ) {
+        throw error;
+      }
+
+      if (
+        typeof error === 'object' &&
+        error !== null &&
+        'code' in error &&
+        error.code === 'ER_DUP_ENTRY'
+      ) {
+        throw new ConflictException(
+          'Ya existe una edición o habilidad duplicada.',
+        );
+      }
+
+      throw error;
+    } finally {
+      if (!queryRunner.isReleased) {
+        await queryRunner.release();
+      }
+    }
+  }
 
   async findAll(
     page = 1,
@@ -250,7 +682,9 @@ export class PlayersService {
       total,
       page: exportAll ? 1 : safePage,
       limit: exportAll ? total : safeLimit,
-      totalPages: exportAll ? (total > 0 ? 1 : 0) : Math.ceil(total / safeLimit),
+      totalPages: exportAll
+        ? (total > 0 ? 1 : 0)
+        : Math.ceil(total / safeLimit),
     };
   }
 
@@ -330,6 +764,9 @@ export class PlayersService {
     };
   }
 }
+
+
+
 
 
 

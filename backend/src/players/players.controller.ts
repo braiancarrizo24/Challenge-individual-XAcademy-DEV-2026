@@ -1,17 +1,61 @@
 import {
   Controller,
   Get,
+  Post,
+  Patch,
   Query,
   Param,
   ParseIntPipe,
+  Body,
 } from '@nestjs/common';
 import { PlayersService } from './players.service';
+import { CreatePlayerDto } from './dto/create-player.dto';
+import { UpdatePlayerDto } from './dto/update-player.dto';
+import { CreatePlayerEditionDto } from './dto/create-player-edition.dto';
+import { UpdatePlayerEditionDto } from './dto/update-player-edition.dto';
 
 @Controller('players')
 export class PlayersController {
   constructor(
     private readonly playersService: PlayersService,
   ) {}
+
+  @Post()
+  create(@Body() createPlayerDto: CreatePlayerDto) {
+    return this.playersService.create(createPlayerDto);
+  }
+
+  @Post(':id/editions')
+  addEdition(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() createPlayerEditionDto: CreatePlayerEditionDto,
+  ) {
+    return this.playersService.addEdition(
+      id,
+      createPlayerEditionDto,
+    );
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePlayerDto: UpdatePlayerDto,
+  ) {
+    return this.playersService.update(id, updatePlayerDto);
+  }
+
+  @Patch(':id/editions/:editionId')
+  updateEdition(
+    @Param('id', ParseIntPipe) id: number,
+    @Param('editionId', ParseIntPipe) editionId: number,
+    @Body() updatePlayerEditionDto: UpdatePlayerEditionDto,
+  ) {
+    return this.playersService.updateEdition(
+      id,
+      editionId,
+      updatePlayerEditionDto,
+    );
+  }
 
   @Get()
   findAll(
@@ -43,6 +87,12 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
+
+
+
+
+
+
 
 
 

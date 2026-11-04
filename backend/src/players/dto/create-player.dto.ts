@@ -6,6 +6,7 @@ import {
   IsNumber,
   IsOptional,
   IsString,
+  Matches,
   Max,
   MaxLength,
   Min,
@@ -22,7 +23,7 @@ class PlayerSkillDto {
   @Type(() => Number)
   @IsNumber({ maxDecimalPlaces: 2 })
   @Min(0)
-  @Max(99)
+  @Max(100)
   value: number;
 }
 
@@ -69,13 +70,13 @@ class InitialEditionDto {
   potential?: number;
 
   @IsOptional()
-  @Type(() => String)
   @IsString()
+  @Matches(/^\d{1,19}$/)
   valueEur?: string;
 
   @IsOptional()
-  @Type(() => String)
   @IsString()
+  @Matches(/^\d{1,19}$/)
   wageEur?: string;
 
   @IsArray()

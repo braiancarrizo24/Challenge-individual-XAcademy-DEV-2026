@@ -56,6 +56,29 @@ export interface PlayerDetail {
   editions: PlayerEdition[];
 }
 
+export interface CreatePlayerSkill {
+  skill: string;
+  value: number;
+}
+
+export interface CreatePlayerPayload {
+  name: string;
+  gender: PlayerGender;
+  nationality?: string;
+  edition: {
+    edition: number;
+    fifaUpdate: number;
+    age?: number;
+    club?: string;
+    position?: string;
+    rating?: number;
+    potential?: number;
+    valueEur?: string;
+    wageEur?: string;
+    skills: CreatePlayerSkill[];
+  };
+}
+
 export type PlayerGender = 'male' | 'female';
 
 @Injectable({
@@ -133,6 +156,10 @@ export class Players {
 
   getPlayerById(id: number): Observable<PlayerDetail> {
     return this.http.get<PlayerDetail>(`${this.apiUrl}/${id}`);
+  }
+
+  createPlayer(payload: CreatePlayerPayload): Observable<PlayerDetail> {
+    return this.http.post<PlayerDetail>(this.apiUrl, payload);
   }
 }
 
