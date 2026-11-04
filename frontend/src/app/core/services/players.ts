@@ -1,3 +1,4 @@
+
 import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -77,6 +78,11 @@ export interface CreatePlayerPayload {
     wageEur?: string;
     skills: CreatePlayerSkill[];
   };
+}
+
+export interface UpdatePlayerPayload {
+  name?: string;
+  nationality?: string;
 }
 
 export type PlayerGender = 'male' | 'female';
@@ -161,7 +167,15 @@ export class Players {
   createPlayer(payload: CreatePlayerPayload): Observable<PlayerDetail> {
     return this.http.post<PlayerDetail>(this.apiUrl, payload);
   }
+
+  updatePlayer(
+    id: number,
+    payload: UpdatePlayerPayload,
+  ): Observable<PlayerDetail> {
+    return this.http.patch<PlayerDetail>(`${this.apiUrl}/${id}`, payload);
+  }
 }
+
 
 
 

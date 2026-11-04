@@ -646,7 +646,129 @@
   }
 }
 
+.player-identity-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
 
+.edit-player-button {
+  padding: 9px 15px;
+  border: 1px solid var(--accent-color);
+  border-radius: 8px;
+  background: var(--surface-hover);
+  color: var(--accent-color);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.edit-player-button:hover {
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.edit-player-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--surface-hover);
+}
+
+.edit-player-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  min-width: 0;
+}
+
+.edit-player-field label {
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+.edit-player-field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  box-sizing: border-box;
+  border: 1px solid var(--border-color);
+  border-radius: 7px;
+  outline: none;
+  background: var(--surface-bg);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.edit-player-field input:focus {
+  border-color: var(--accent-color);
+}
+
+.edit-player-error {
+  grid-column: 1 / -1;
+  margin: 0;
+  color: #ef4444;
+  font-size: 0.85rem;
+}
+
+.edit-player-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  grid-column: 1 / -1;
+}
+
+.save-player-button,
+.cancel-player-button {
+  padding: 10px 16px;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s ease, background 0.2s ease;
+}
+
+.save-player-button {
+  border: 1px solid var(--accent-color);
+  background: var(--accent-color);
+  color: #fff;
+}
+
+.cancel-player-button {
+  border: 1px solid var(--border-color);
+  background: var(--surface-bg);
+  color: var(--text-primary);
+}
+
+.save-player-button:disabled,
+.cancel-player-button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+@media (max-width: 480px) {
+  .edit-player-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .edit-player-error,
+  .edit-player-actions {
+    grid-column: auto;
+  }
+
+  .player-identity-heading {
+    align-items: flex-start;
+  }
+}
 
 
 

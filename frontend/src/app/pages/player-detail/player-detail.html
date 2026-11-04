@@ -73,10 +73,73 @@
         <span class="gender">
           {{ player.gender === 'male' ? 'JUGADOR' : 'JUGADORA' }}
         </span>
-        <h1>{{ player.name }}</h1>
+
+        <div class="player-identity-heading">
+          <h1>{{ player.name }}</h1>
+          <button
+            type="button"
+            class="edit-player-button"
+            (click)="openPlayerEditor()"
+          >
+            ✎ Editar jugador
+          </button>
+        </div>
+
         <p class="player-nationality">
           {{ player.nationality || 'Nacionalidad no disponible' }}
         </p>
+
+        <form
+          *ngIf="isEditingPlayer"
+          class="edit-player-form"
+          (ngSubmit)="savePlayerChanges()"
+        >
+          <div class="edit-player-field">
+            <label for="edit-player-name">Nombre</label>
+            <input
+              id="edit-player-name"
+              type="text"
+              name="editPlayerName"
+              [(ngModel)]="editPlayerName"
+              maxlength="150"
+              required
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-player-nationality">Nacionalidad</label>
+            <input
+              id="edit-player-nationality"
+              type="text"
+              name="editPlayerNationality"
+              [(ngModel)]="editPlayerNationality"
+              maxlength="100"
+            />
+          </div>
+
+          <p *ngIf="editPlayerError" class="edit-player-error">
+            {{ editPlayerError }}
+          </p>
+
+          <div class="edit-player-actions">
+            <button
+              type="submit"
+              class="save-player-button"
+              [disabled]="savingPlayer"
+            >
+              {{ savingPlayer ? 'Guardando...' : 'Guardar cambios' }}
+            </button>
+
+            <button
+              type="button"
+              class="cancel-player-button"
+              [disabled]="savingPlayer"
+              (click)="cancelPlayerEditor()"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </div>
 
       <div class="player-overview">
@@ -341,6 +404,7 @@
 >
   ↑
 </button>
+
 
 
 

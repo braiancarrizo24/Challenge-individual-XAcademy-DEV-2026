@@ -1,5 +1,5 @@
-
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import {
   Component,
   OnInit,
@@ -32,7 +32,7 @@ import { EditionService } from '../../core/services/edition';
 @Component({
   selector: 'app-player-detail',
   standalone: true,
-  imports: [CommonModule, RouterLink, EditionSelector, BaseChartDirective],
+  imports: [CommonModule, FormsModule, RouterLink, EditionSelector, BaseChartDirective],
   templateUrl: './player-detail.html',
   styleUrl: './player-detail.css',
 })
@@ -62,6 +62,12 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
   player: PlayerDetail | null = null;
   loading = true;
   error = '';
+
+  isEditingPlayer = false;
+  savingPlayer = false;
+  editPlayerError = '';
+  editPlayerName = '';
+  editPlayerNationality = '';
 
   comparisonEditions: number[] = [];
 
@@ -352,6 +358,62 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  openPlayerEditor(): void {
+    if (!this.player) {
+      return;
+    }
+
+    this.editPlayerName = this.player.name;
+    this.editPlayerNationality = this.player.nationality ?? '';
+    this.editPlayerError = '';
+    this.isEditingPlayer = true;
+  }
+
+  cancelPlayerEditor(): void {
+    this.isEditingPlayer = false;
+    this.editPlayerError = '';
+    this.savingPlayer = false;
+  }
+
+  savePlayerChanges(): void {
+    if (!this.player || this.savingPlayer) {
+      return;
+    }
+
+    const name = this.editPlayerName.trim();
+    const nationality = this.editPlayerNationality.trim();
+
+    if (!name) {
+      this.editPlayerError = 'El nombre del jugador es obligatorio.';
+      return;
+    }
+
+    this.savingPlayer = true;
+    this.editPlayerError = '';
+
+    this.playersService.updatePlayer(this.player.id, {
+      name,
+      nationality,
+    }).subscribe({
+      next: (updatedPlayer) => {
+        this.player = updatedPlayer;
+        this.isEditingPlayer = false;
+        this.savingPlayer = false;
+        this.changeDetector.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al actualizar el jugador:', error);
+
+        this.editPlayerError =
+          error.error?.message ||
+          'No se pudieron guardar los cambios del jugador.';
+
+        this.savingPlayer = false;
+        this.changeDetector.detectChanges();
+      },
+    });
+  }
+
   setTheme(dark: boolean): void {
     this.isDarkMode = dark;
     this.applyTheme();
@@ -416,6 +478,9 @@ function primaryColor(): string {
     .getPropertyValue('--surface-bg')
     .trim();
 }
+
+
+
 
 
 
