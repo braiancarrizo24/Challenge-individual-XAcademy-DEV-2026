@@ -7,12 +7,16 @@ import {
   Param,
   ParseIntPipe,
   Body,
+  UseGuards,
 } from '@nestjs/common';
+
 import { PlayersService } from './players.service';
 import { CreatePlayerDto } from './dto/create-player.dto';
 import { UpdatePlayerDto } from './dto/update-player.dto';
 import { CreatePlayerEditionDto } from './dto/create-player-edition.dto';
 import { UpdatePlayerEditionDto } from './dto/update-player-edition.dto';
+
+import { JwtAuthGuard } from '../auth/strategies/jwt-auth.guard';
 
 @Controller('players')
 export class PlayersController {
@@ -21,11 +25,13 @@ export class PlayersController {
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createPlayerDto: CreatePlayerDto) {
     return this.playersService.create(createPlayerDto);
   }
 
   @Post(':id/editions')
+  @UseGuards(JwtAuthGuard)
   addEdition(
     @Param('id', ParseIntPipe) id: number,
     @Body() createPlayerEditionDto: CreatePlayerEditionDto,
@@ -37,6 +43,7 @@ export class PlayersController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePlayerDto: UpdatePlayerDto,
@@ -45,6 +52,7 @@ export class PlayersController {
   }
 
   @Patch(':id/editions/:editionId')
+  @UseGuards(JwtAuthGuard)
   updateEdition(
     @Param('id', ParseIntPipe) id: number,
     @Param('editionId', ParseIntPipe) editionId: number,
@@ -87,8 +95,6 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
-
-
 
 
 
