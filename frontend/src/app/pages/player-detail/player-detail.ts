@@ -1,3 +1,4 @@
+
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import {
@@ -25,6 +26,7 @@ import {
   Players,
   PlayerDetail,
   PlayerEdition,
+  UpdatePlayerEditionPayload,
 } from '../../core/services/players';
 import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
 import { EditionService } from '../../core/services/edition';
@@ -68,6 +70,20 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
   editPlayerError = '';
   editPlayerName = '';
   editPlayerNationality = '';
+
+  isEditingEdition = false;
+  savingEdition = false;
+  editEditionError = '';
+
+  editEditionFifaUpdate = 0;
+  editEditionAge: number | null = null;
+  editEditionClub = '';
+  editEditionPosition = '';
+  editEditionRating: number | null = null;
+  editEditionPotential: number | null = null;
+  editEditionValueEur = '';
+  editEditionWageEur = '';
+  editEditionSkills: Record<string, number> = {};
 
   comparisonEditions: number[] = [];
 
@@ -414,6 +430,162 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
     });
   }
 
+  openEditionEditor(): void {
+    const edition = this.selectedEditionData[0];
+
+    if (!edition) {
+      return;
+    }
+
+    this.editEditionFifaUpdate = Number(edition.fifaUpdate);
+    this.editEditionAge = edition.age ?? null;
+    this.editEditionClub = edition.club ?? '';
+    this.editEditionPosition = edition.position ?? '';
+    this.editEditionRating = edition.rating ?? null;
+    this.editEditionPotential = edition.potential ?? null;
+    this.editEditionValueEur = edition.valueEur ?? '';
+    this.editEditionWageEur = edition.wageEur ?? '';
+
+    this.editEditionSkills = {};
+
+    edition.skills.forEach((skill) => {
+      this.editEditionSkills[skill.skill] = Number(skill.value);
+    });
+
+    this.editEditionError = '';
+    this.isEditingEdition = true;
+  }
+
+  cancelEditionEditor(): void {
+    this.isEditingEdition = false;
+    this.editEditionError = '';
+    this.savingEdition = false;
+  }
+
+  saveEditionChanges(): void {
+    const edition = this.selectedEditionData[0];
+
+    if (!this.player || !edition || this.savingEdition) {
+      return;
+    }
+
+    if (
+      !Number.isInteger(this.editEditionFifaUpdate) ||
+      this.editEditionFifaUpdate < 0
+    ) {
+      this.editEditionError =
+        'La actualización FIFA debe ser un número entero igual o mayor que 0.';
+      return;
+    }
+
+    if (
+      this.editEditionAge !== null &&
+      (!Number.isInteger(this.editEditionAge) || this.editEditionAge < 1)
+    ) {
+      this.editEditionError = 'La edad debe ser un número entero mayor que 0.';
+      return;
+    }
+
+    if (
+      this.editEditionRating !== null &&
+      (!Number.isInteger(this.editEditionRating) ||
+        this.editEditionRating < 0 ||
+        this.editEditionRating > 99)
+    ) {
+      this.editEditionError = 'El rating debe estar entre 0 y 99.';
+      return;
+    }
+
+    if (
+      this.editEditionPotential !== null &&
+      (!Number.isInteger(this.editEditionPotential) ||
+        this.editEditionPotential < 0 ||
+        this.editEditionPotential > 99)
+    ) {
+      this.editEditionError = 'El potencial debe estar entre 0 y 99.';
+      return;
+    }
+
+    if (this.editEditionClub.length > 150) {
+      this.editEditionError = 'El club no puede superar los 150 caracteres.';
+      return;
+    }
+
+    if (this.editEditionPosition.length > 80) {
+      this.editEditionError = 'La posición no puede superar los 80 caracteres.';
+      return;
+    }
+
+    if (
+      !/^\d{1,19}$/.test(this.editEditionValueEur) ||
+      !/^\d{1,19}$/.test(this.editEditionWageEur)
+    ) {
+      this.editEditionError =
+        'El valor y el salario deben contener solamente números enteros.';
+      return;
+    }
+
+    const skills = edition.skills.map((skill) => {
+      const value = this.editEditionSkills[skill.skill];
+
+      return {
+        skill: skill.skill,
+        value,
+      };
+    });
+
+    const invalidSkill = skills.some(
+      (skill) =>
+        !Number.isFinite(skill.value) ||
+        skill.value < 0 ||
+        skill.value > 100
+    );
+
+    if (invalidSkill) {
+      this.editEditionError =
+        'Todas las habilidades deben tener un valor entre 0 y 100.';
+      return;
+    }
+
+    const payload: UpdatePlayerEditionPayload = {
+      fifaUpdate: this.editEditionFifaUpdate,
+      age: this.editEditionAge ?? undefined,
+      club: this.editEditionClub,
+      position: this.editEditionPosition,
+      rating: this.editEditionRating ?? undefined,
+      potential: this.editEditionPotential ?? undefined,
+      valueEur: this.editEditionValueEur,
+      wageEur: this.editEditionWageEur,
+      skills,
+    };
+
+    this.savingEdition = true;
+    this.editEditionError = '';
+
+    this.playersService.updatePlayerEdition(
+      this.player.id,
+      edition.id,
+      payload
+    ).subscribe({
+      next: (updatedPlayer) => {
+        this.player = updatedPlayer;
+        this.isEditingEdition = false;
+        this.savingEdition = false;
+        this.changeDetector.detectChanges();
+      },
+      error: (error) => {
+        console.error('Error al actualizar la edición:', error);
+
+        this.editEditionError =
+          error.error?.message ||
+          'No se pudieron guardar los cambios de esta edición.';
+
+        this.savingEdition = false;
+        this.changeDetector.detectChanges();
+      },
+    });
+  }
+
   setTheme(dark: boolean): void {
     this.isDarkMode = dark;
     this.applyTheme();
@@ -478,6 +650,7 @@ function primaryColor(): string {
     .getPropertyValue('--surface-bg')
     .trim();
 }
+
 
 
 

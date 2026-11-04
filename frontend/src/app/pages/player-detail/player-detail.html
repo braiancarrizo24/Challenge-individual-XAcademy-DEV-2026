@@ -179,6 +179,186 @@
         Seleccioná una edición para consultar los datos y estadísticas del jugador.
       </p>
       <app-edition-selector [availableEditions]="availableEditions" />
+
+      <div *ngIf="selectedEditionData.length > 0" class="edition-edit-controls">
+        <button
+          type="button"
+          class="edit-player-button"
+          (click)="openEditionEditor()"
+          [disabled]="savingEdition"
+        >
+          ✎ Editar edición FIFA {{ selectedEditionData[0].edition }}
+        </button>
+      </div>
+
+      <form
+        *ngIf="isEditingEdition && selectedEditionData.length > 0"
+        class="edit-player-form edit-edition-form"
+        (ngSubmit)="saveEditionChanges()"
+      >
+        <h3>Editar edición FIFA {{ selectedEditionData[0].edition }}</h3>
+
+        <p class="section-description">
+          Los cambios se aplicarán únicamente a esta edición del jugador.
+        </p>
+
+        <div class="edition-edit-fields">
+          <div class="edit-player-field">
+            <label for="edit-edition-update">Actualización FIFA</label>
+            <input
+              id="edit-edition-update"
+              type="number"
+              name="editEditionFifaUpdate"
+              [(ngModel)]="editEditionFifaUpdate"
+              min="0"
+              step="1"
+              required
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-age">Edad</label>
+            <input
+              id="edit-edition-age"
+              type="number"
+              name="editEditionAge"
+              [(ngModel)]="editEditionAge"
+              min="1"
+              step="1"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-club">Club</label>
+            <input
+              id="edit-edition-club"
+              type="text"
+              name="editEditionClub"
+              [(ngModel)]="editEditionClub"
+              maxlength="150"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-position">Posición</label>
+            <input
+              id="edit-edition-position"
+              type="text"
+              name="editEditionPosition"
+              [(ngModel)]="editEditionPosition"
+              maxlength="80"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-rating">Valoración</label>
+            <input
+              id="edit-edition-rating"
+              type="number"
+              name="editEditionRating"
+              [(ngModel)]="editEditionRating"
+              min="0"
+              max="99"
+              step="1"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-potential">Potencial</label>
+            <input
+              id="edit-edition-potential"
+              type="number"
+              name="editEditionPotential"
+              [(ngModel)]="editEditionPotential"
+              min="0"
+              max="99"
+              step="1"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-value">Valor (€)</label>
+            <input
+              id="edit-edition-value"
+              type="text"
+              name="editEditionValueEur"
+              [(ngModel)]="editEditionValueEur"
+              pattern="[0-9]{1,19}"
+              maxlength="19"
+            />
+          </div>
+
+          <div class="edit-player-field">
+            <label for="edit-edition-wage">Salario (€)</label>
+            <input
+              id="edit-edition-wage"
+              type="text"
+              name="editEditionWageEur"
+              [(ngModel)]="editEditionWageEur"
+              pattern="[0-9]{1,19}"
+              maxlength="19"
+            />
+          </div>
+        </div>
+
+        <section class="edit-edition-skills">
+          <h3>Habilidades del jugador</h3>
+
+          <div class="skill-groups">
+            <article
+              class="skill-group"
+              *ngFor="let group of skillGroups; let groupIndex = index"
+            >
+              <h4>{{ group.title }}</h4>
+
+              <div
+                class="skill-item"
+                *ngFor="let skill of group.skills; let skillIndex = index"
+              >
+                <label
+                  [for]="'edit-skill-' + groupIndex + '-' + skillIndex"
+                >
+                  {{ skill.label }}
+                </label>
+
+                <input
+                  [id]="'edit-skill-' + groupIndex + '-' + skillIndex"
+                  type="number"
+                  [name]="'editSkill-' + skill.key"
+                  [(ngModel)]="editEditionSkills[skill.key]"
+                  min="0"
+                  max="100"
+                  step="1"
+                  required
+                />
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <p *ngIf="editEditionError" class="edit-player-error">
+          {{ editEditionError }}
+        </p>
+
+        <div class="edit-player-actions">
+          <button
+            type="submit"
+            class="save-player-button"
+            [disabled]="savingEdition"
+          >
+            {{ savingEdition ? 'Guardando...' : 'Guardar cambios' }}
+          </button>
+
+          <button
+            type="button"
+            class="cancel-player-button"
+            [disabled]="savingEdition"
+            (click)="cancelEditionEditor()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </form>
     </section>
 
     <section *ngIf="selectedEditionData.length > 0" class="player-analysis-layout">
@@ -404,6 +584,8 @@
 >
   ↑
 </button>
+
+
 
 
 
