@@ -5,6 +5,7 @@ import {
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
   Players,
@@ -16,7 +17,7 @@ import { EditionService } from '../../core/services/edition';
 
 @Component({
   selector: 'app-women-players-list',
-  imports: [CommonModule, EditionSelector, RouterLink],
+  imports: [CommonModule, FormsModule, EditionSelector, RouterLink],
   templateUrl: './women-players-list.html',
   styleUrl: './women-players-list.css',
 })
@@ -34,6 +35,14 @@ export class WomenPlayersList {
   totalPlayers = 0;
   totalPages = 0;
 
+  nameFilter = '';
+  clubFilter = '';
+  positionFilter = '';
+
+  appliedName = '';
+  appliedClub = '';
+  appliedPosition = '';
+
   constructor() {
     effect(() => {
       const edition = this.editionService.selectedEdition();
@@ -43,12 +52,29 @@ export class WomenPlayersList {
     });
   }
 
+  searchPlayers(): void {
+    this.appliedName = this.nameFilter.trim();
+    this.appliedClub = this.clubFilter.trim();
+    this.appliedPosition = this.positionFilter.trim();
+
+    this.currentPage = 1;
+    this.loadPlayers(this.editionService.selectedEdition());
+  }
+
   loadPlayers(edition: number): void {
     this.loading = true;
     this.error = '';
 
     this.playersService
-      .getPlayers(this.currentPage, this.pageSize, 'female', edition)
+      .getPlayers(
+        this.currentPage,
+        this.pageSize,
+        'female',
+        edition,
+        this.appliedName,
+        this.appliedClub,
+        this.appliedPosition,
+      )
       .subscribe({
         next: (response: PlayersResponse) => {
           this.players = response.data;

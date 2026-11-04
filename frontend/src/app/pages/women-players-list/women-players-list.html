@@ -10,6 +10,45 @@
 
   <app-edition-selector />
 
+  <form class="players-filters" (ngSubmit)="searchPlayers()">
+    <div class="filter-field">
+      <label for="nameFilter">Nombre de la jugadora</label>
+      <input
+        id="nameFilter"
+        type="text"
+        name="nameFilter"
+        [(ngModel)]="nameFilter"
+        placeholder="Buscar por nombre..."
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="clubFilter">Club</label>
+      <input
+        id="clubFilter"
+        type="text"
+        name="clubFilter"
+        [(ngModel)]="clubFilter"
+        placeholder="Buscar por club..."
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="positionFilter">Posición</label>
+      <input
+        id="positionFilter"
+        type="text"
+        name="positionFilter"
+        [(ngModel)]="positionFilter"
+        placeholder="Ejemplo: ST, GK, CM..."
+      />
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      Buscar jugadoras
+    </button>
+  </form>
+
   @if (loading) {
     <p class="status-message">Cargando jugadoras...</p>
   } @else if (error) {
@@ -97,6 +136,8 @@
     }
   }
 </section>
+
+
 
 
 
