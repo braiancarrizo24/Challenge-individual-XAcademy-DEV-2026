@@ -1,10 +1,50 @@
+
 <section class="players-page">
   <header class="page-header">
     <h1>Jugadores de FIFA</h1>
     <p>Explorá los jugadores registrados en la base de datos.</p>
   </header>
 
-   <app-edition-selector />
+  <app-edition-selector />
+
+  <form class="players-filters" (ngSubmit)="searchPlayers()">
+    <div class="filter-field">
+      <label for="nameFilter">Nombre del jugador</label>
+      <input
+        id="nameFilter"
+        type="text"
+        name="nameFilter"
+        [(ngModel)]="nameFilter"
+        placeholder="Buscar por nombre..."
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="clubFilter">Club</label>
+      <input
+        id="clubFilter"
+        type="text"
+        name="clubFilter"
+        [(ngModel)]="clubFilter"
+        placeholder="Buscar por club..."
+      />
+    </div>
+
+    <div class="filter-field">
+      <label for="positionFilter">Posición</label>
+      <input
+        id="positionFilter"
+        type="text"
+        name="positionFilter"
+        [(ngModel)]="positionFilter"
+        placeholder="Ejemplo: ST, GK, CM..."
+      />
+    </div>
+
+    <button type="submit" [disabled]="loading">
+      Buscar jugadores
+    </button>
+  </form>
 
   @if (loading) {
     <p class="status-message">Cargando jugadores...</p>
@@ -12,20 +52,46 @@
     <p class="error-message">{{ error }}</p>
   } @else {
     <p class="results-count">
-      Jugadores encontrados: {{ totalPlayers }}
+      Versiones de jugadores encontradas: {{ totalPlayers }}
     </p>
 
     <div class="players-grid">
-      @for (player of players; track player.id) {
+      @for (player of players; track player.playerEditionId) {
         <article class="player-card">
-          <h2> <a [routerLink]="['/players', player.id]">{{ player.name }}</a>
-             
+          <h2>
+            <a
+              [routerLink]="['/players', player.id]"
+              [queryParams]="{ editionId: player.playerEditionId }"
+            >
+              {{ player.name }}
+            </a>
           </h2>
-         
+
+          <p>
+            <strong>Edición:</strong>
+            FIFA {{ player.edition }}
+          </p>
+
+          <p>
+            <strong>Club:</strong>
+            {{ player.club || 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Posición:</strong>
+            {{ player.position || 'No disponible' }}
+          </p>
+
+          <p>
+            <strong>Calificación:</strong>
+            {{ player.rating ?? 'No disponible' }}
+          </p>
+
           <p>
             <strong>Nacionalidad:</strong>
             {{ player.nationality || 'No disponible' }}
           </p>
+
           <p>
             <strong>Género:</strong>
             {{ player.gender }}
@@ -59,3 +125,7 @@
     </nav>
   }
 </section>
+
+
+
+

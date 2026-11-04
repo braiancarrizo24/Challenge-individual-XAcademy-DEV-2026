@@ -20,8 +20,19 @@ export class PlayersController {
     @Query('limit', new ParseIntPipe({ optional: true })) limit = 30,
     @Query('gender') gender?: string,
     @Query('edition', new ParseIntPipe({ optional: true })) edition?: number,
+    @Query('name') name?: string,
+    @Query('club') club?: string,
+    @Query('position') position?: string,
   ) {
-    return this.playersService.findAll(page, limit, gender, edition);
+    return this.playersService.findAll(
+      page,
+      limit,
+      gender,
+      edition,
+      name,
+      club,
+      position,
+    );
   }
 
   @Get(':id')
@@ -31,5 +42,6 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
+
 
 

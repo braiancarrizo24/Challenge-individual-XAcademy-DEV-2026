@@ -1,3 +1,4 @@
+
 <section class="players-page">
   <header class="page-header">
     <h1>Jugadoras de FIFA</h1>
@@ -19,15 +20,18 @@
     </p>
 
     <div class="players-grid">
-      @for (player of players; track player.id) {
+      @for (player of players; track player.playerEditionId) {
         <article class="player-card">
           <header class="player-card-header">
             <h2>
-              <a [routerLink]="['/players', player.id]">
+              <a
+                [routerLink]="['/players', player.id]"
+                [queryParams]="{ editionId: player.playerEditionId }"
+              >
                 {{ player.name }}
               </a>
             </h2>
-            
+
             <span class="player-rating">
               {{ player.rating ?? 'N/D' }}
             </span>
@@ -93,6 +97,7 @@
     }
   }
 </section>
+
 
 
 

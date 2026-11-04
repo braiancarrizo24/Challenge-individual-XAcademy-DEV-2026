@@ -320,11 +320,21 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
         this.player = player;
 
         if (player.editions.length > 0) {
+          const requestedEditionId = Number(
+            this.route.snapshot.queryParamMap.get('editionId')
+          );
+
+          const requestedEdition = player.editions.find(
+            (edition) => Number(edition.id) === requestedEditionId
+          );
+
           const latestEdition = Math.max(
             ...player.editions.map((edition) => edition.edition)
           );
 
-          this.editionService.selectEdition(latestEdition);
+          this.editionService.selectEdition(
+            requestedEdition?.edition ?? latestEdition
+          );
         }
 
         this.comparisonEditions = [];
@@ -406,6 +416,9 @@ function primaryColor(): string {
     .getPropertyValue('--surface-bg')
     .trim();
 }
+
+
+
 
 
 

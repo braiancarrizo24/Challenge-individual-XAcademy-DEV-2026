@@ -6,6 +6,7 @@ import {
   effect,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import {
   Players,
@@ -17,7 +18,7 @@ import { EditionService } from '../../core/services/edition';
 
 @Component({
   selector: 'app-players-list',
-  imports: [CommonModule, EditionSelector, RouterLink],
+  imports: [CommonModule, FormsModule, EditionSelector, RouterLink],
   templateUrl: './players-list.html',
   styleUrl: './players-list.css',
 })
@@ -35,6 +36,14 @@ export class PlayersList implements OnInit {
   totalPlayers = 0;
   totalPages = 0;
 
+  nameFilter = '';
+  clubFilter = '';
+  positionFilter = '';
+
+  appliedName = '';
+  appliedClub = '';
+  appliedPosition = '';
+
   constructor() {
     effect(() => {
       const edition = this.editionService.selectedEdition();
@@ -46,12 +55,29 @@ export class PlayersList implements OnInit {
 
   ngOnInit(): void {}
 
+  searchPlayers(): void {
+    this.appliedName = this.nameFilter.trim();
+    this.appliedClub = this.clubFilter.trim();
+    this.appliedPosition = this.positionFilter.trim();
+
+    this.currentPage = 1;
+    this.loadPlayers(this.editionService.selectedEdition());
+  }
+
   loadPlayers(edition: number): void {
     this.loading = true;
     this.error = '';
 
     this.playersService
-      .getPlayers(this.currentPage, this.pageSize, 'male', edition)
+      .getPlayers(
+        this.currentPage,
+        this.pageSize,
+        'male',
+        edition,
+        this.appliedName,
+        this.appliedClub,
+        this.appliedPosition,
+      )
       .subscribe({
         next: (response: PlayersResponse) => {
           this.players = response.data;
@@ -92,8 +118,6 @@ export class PlayersList implements OnInit {
     }
   }
 }
-
-
 
 
 

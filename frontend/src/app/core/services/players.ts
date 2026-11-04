@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 export interface Player {
   id: number;
+  playerEditionId: number;
   sourcePlayerId: number;
   name: string;
   nationality: string | null;
@@ -70,6 +71,9 @@ export class Players {
     limit = 30,
     gender?: PlayerGender,
     edition?: number,
+    name?: string,
+    club?: string,
+    position?: string,
   ): Observable<PlayersResponse> {
     let params = new HttpParams()
       .set('page', page)
@@ -83,6 +87,18 @@ export class Players {
       params = params.set('edition', edition);
     }
 
+    if (name?.trim()) {
+      params = params.set('name', name.trim());
+    }
+
+    if (club?.trim()) {
+      params = params.set('club', club.trim());
+    }
+
+    if (position?.trim()) {
+      params = params.set('position', position.trim());
+    }
+
     return this.http.get<PlayersResponse>(this.apiUrl, { params });
   }
 
@@ -90,6 +106,8 @@ export class Players {
     return this.http.get<PlayerDetail>(`${this.apiUrl}/${id}`);
   }
 }
+
+
 
 
 

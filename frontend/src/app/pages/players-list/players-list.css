@@ -1,8 +1,5 @@
 
-/* ========================================
-   PÁGINA DE JUGADORES
-   Reutiliza las variables globales de FIFA Stats
-   ======================================== */
+
 
 .players-page {
   max-width: 1300px;
@@ -34,7 +31,7 @@
   color: var(--text-secondary);
 }
 
-/* Tarjetas: misma identidad visual que el Home */
+
 
 .players-grid {
   display: grid;

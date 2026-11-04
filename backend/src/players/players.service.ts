@@ -16,6 +16,9 @@ export class PlayersService {
     limit = 30,
     gender?: string,
     edition?: number,
+    name?: string,
+    club?: string,
+    position?: string,
   ): Promise<{
     data: any[];
     total: number;
@@ -38,10 +41,86 @@ export class PlayersService {
         ? edition
         : null;
 
+    const safeName = name?.trim() || null;
+    const safeClub = club?.trim() || null;
+    const safePosition = position?.trim() || null;
+
+    const hasFilters = Boolean(
+      safeName || safeClub || safePosition,
+    );
+
+    const filters = `
+      (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR pe.club LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR pe.position LIKE CONCAT('%', ?, '%'))
+    `;
+
+    const filterParams = [
+      safeName,
+      safeName,
+      safeClub,
+      safeClub,
+      safePosition,
+      safePosition,
+    ];
+
     let countResult: any[];
     let data: any[];
 
-    if (safeEdition !== null) {
+    if (hasFilters) {
+      countResult = await this.playersRepository.query(
+        `
+        SELECT COUNT(*) AS total
+        FROM players p
+        INNER JOIN player_editions pe
+          ON pe.player_id = p.id
+        WHERE (? IS NULL OR p.gender = ?)
+          AND pe.edition BETWEEN 15 AND 23
+          AND ${filters}
+        `,
+        [
+          safeGender,
+          safeGender,
+          ...filterParams,
+        ],
+      );
+
+      data = await this.playersRepository.query(
+        `
+        SELECT
+          p.id,
+          pe.id AS playerEditionId,
+          p.source_player_id AS sourcePlayerId,
+          p.name,
+          p.nationality,
+          p.gender,
+          pe.edition,
+          pe.fifa_update AS fifaUpdate,
+          pe.age,
+          pe.club,
+          pe.position,
+          pe.rating,
+          pe.potential,
+          pe.value_eur AS valueEur,
+          pe.wage_eur AS wageEur
+        FROM players p
+        INNER JOIN player_editions pe
+          ON pe.player_id = p.id
+        WHERE (? IS NULL OR p.gender = ?)
+          AND pe.edition BETWEEN 15 AND 23
+          AND ${filters}
+        ORDER BY p.name ASC, pe.edition DESC, pe.fifa_update DESC, pe.id DESC
+        LIMIT ? OFFSET ?
+        `,
+        [
+          safeGender,
+          safeGender,
+          ...filterParams,
+          safeLimit,
+          offset,
+        ],
+      );
+    } else if (safeEdition !== null) {
       countResult = await this.playersRepository.query(
         `
         SELECT COUNT(*) AS total
@@ -51,13 +130,18 @@ export class PlayersService {
         WHERE (? IS NULL OR p.gender = ?)
           AND pe.edition = ?
         `,
-        [safeGender, safeGender, safeEdition],
+        [
+          safeGender,
+          safeGender,
+          safeEdition,
+        ],
       );
 
       data = await this.playersRepository.query(
         `
         SELECT
           p.id,
+          pe.id AS playerEditionId,
           p.source_player_id AS sourcePlayerId,
           p.name,
           p.nationality,
@@ -76,25 +160,62 @@ export class PlayersService {
           ON pe.player_id = p.id
         WHERE (? IS NULL OR p.gender = ?)
           AND pe.edition = ?
-        ORDER BY p.name ASC, p.id ASC
+        ORDER BY p.name ASC, p.id ASC, pe.fifa_update DESC, pe.id DESC
         LIMIT ? OFFSET ?
         `,
-        [safeGender, safeGender, safeEdition, safeLimit, offset],
+        [
+          safeGender,
+          safeGender,
+          safeEdition,
+          safeLimit,
+          offset,
+        ],
       );
     } else {
+      const latestVersionQuery = `
+        SELECT
+          p.id,
+          pe.id AS player_edition_id,
+          p.source_player_id,
+          p.name,
+          p.nationality,
+          p.gender,
+          pe.edition,
+          pe.fifa_update,
+          pe.age,
+          pe.club,
+          pe.position,
+          pe.rating,
+          pe.potential,
+          pe.value_eur,
+          pe.wage_eur,
+          ROW_NUMBER() OVER (
+            PARTITION BY p.id
+            ORDER BY pe.edition DESC, pe.fifa_update DESC, pe.id DESC
+          ) AS version_number
+        FROM players p
+        INNER JOIN player_editions pe
+          ON pe.player_id = p.id
+        WHERE (? IS NULL OR p.gender = ?)
+      `;
+
       countResult = await this.playersRepository.query(
         `
         SELECT COUNT(*) AS total
-        FROM players p
-        WHERE (? IS NULL OR p.gender = ?)
+        FROM (${latestVersionQuery}) AS ranked
+        WHERE ranked.version_number = 1
         `,
-        [safeGender, safeGender],
+        [
+          safeGender,
+          safeGender,
+        ],
       );
 
       data = await this.playersRepository.query(
         `
         SELECT
           ranked.id,
+          ranked.player_edition_id AS playerEditionId,
           ranked.source_player_id AS sourcePlayerId,
           ranked.name,
           ranked.nationality,
@@ -108,36 +229,17 @@ export class PlayersService {
           ranked.potential,
           ranked.value_eur AS valueEur,
           ranked.wage_eur AS wageEur
-        FROM (
-          SELECT
-            p.id,
-            p.source_player_id,
-            p.name,
-            p.nationality,
-            p.gender,
-            pe.edition,
-            pe.fifa_update,
-            pe.age,
-            pe.club,
-            pe.position,
-            pe.rating,
-            pe.potential,
-            pe.value_eur,
-            pe.wage_eur,
-            ROW_NUMBER() OVER (
-              PARTITION BY p.id
-              ORDER BY pe.edition DESC, pe.fifa_update DESC, pe.id DESC
-            ) AS version_number
-          FROM players p
-          INNER JOIN player_editions pe
-            ON pe.player_id = p.id
-          WHERE (? IS NULL OR p.gender = ?)
-        ) AS ranked
+        FROM (${latestVersionQuery}) AS ranked
         WHERE ranked.version_number = 1
         ORDER BY ranked.name ASC, ranked.id ASC
         LIMIT ? OFFSET ?
         `,
-        [safeGender, safeGender, safeLimit, offset],
+        [
+          safeGender,
+          safeGender,
+          safeLimit,
+          offset,
+        ],
       );
     }
 
@@ -153,7 +255,6 @@ export class PlayersService {
   }
 
   async findOne(id: number): Promise<any> {
-    // 1. Buscar los datos generales del jugador.
     const players = await this.playersRepository.query(
       `
       SELECT
@@ -168,14 +269,12 @@ export class PlayersService {
       [id],
     );
 
-    // 2. Comprobar si el jugador existe.
     if (players.length === 0) {
       throw new NotFoundException('Jugador no encontrado');
     }
 
     const player = players[0];
 
-    // 3. Recuperar todas las ediciones del jugador.
     const editions = await this.playersRepository.query(
       `
       SELECT
@@ -196,7 +295,6 @@ export class PlayersService {
       [id],
     );
 
-    // 4. Recuperar las habilidades de todas sus ediciones.
     const skills = await this.playersRepository.query(
       `
       SELECT
@@ -212,7 +310,6 @@ export class PlayersService {
       [id],
     );
 
-    // 5. Asociar cada habilidad con su edición.
     const editionsWithSkills = editions.map(
       (edition: any) => ({
         ...edition,
@@ -227,13 +324,14 @@ export class PlayersService {
       }),
     );
 
-    // 6. Devolver el perfil completo.
     return {
       ...player,
       editions: editionsWithSkills,
     };
   }
 }
+
+
 
 
 
