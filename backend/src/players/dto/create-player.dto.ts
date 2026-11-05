@@ -1,5 +1,7 @@
+
 import {
   IsArray,
+  IsDefined,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -17,6 +19,9 @@ import { Type } from 'class-transformer';
 class PlayerSkillDto {
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, {
+    message: 'La habilidad no puede contener solamente espacios.',
+  })
   @MaxLength(80)
   skill: string;
 
@@ -88,6 +93,9 @@ class InitialEditionDto {
 export class CreatePlayerDto {
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, {
+    message: 'El nombre no puede contener solamente espacios.',
+  })
   @MaxLength(150)
   name: string;
 
@@ -99,6 +107,7 @@ export class CreatePlayerDto {
   @MaxLength(100)
   nationality?: string;
 
+  @IsDefined()
   @ValidateNested()
   @Type(() => InitialEditionDto)
   edition: InitialEditionDto;

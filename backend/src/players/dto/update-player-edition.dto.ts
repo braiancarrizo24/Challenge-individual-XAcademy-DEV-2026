@@ -1,3 +1,4 @@
+
 import {
   IsArray,
   IsInt,
@@ -16,6 +17,9 @@ import { Type } from 'class-transformer';
 class UpdateEditionSkillDto {
   @IsString()
   @IsNotEmpty()
+  @Matches(/\S/, {
+    message: 'La habilidad no puede contener solamente espacios.',
+  })
   @MaxLength(80)
   skill: string;
 
