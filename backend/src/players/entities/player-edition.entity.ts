@@ -12,7 +12,7 @@ import { PlayerEntity } from './player.entity';
 import { PlayerSkillEntity } from './player-skill.entity';
 
 @Entity('player_editions')
-@Index(['playerId', 'edition'], { unique: true })
+@Index(['playerId', 'edition', 'fifaUpdate'], { unique: true })
 
 export class PlayerEditionEntity {
   @PrimaryGeneratedColumn()

@@ -213,16 +213,17 @@ export class PlayersService {
 
       const existingEdition = await editionRepository.findOne({
         where: {
-          playerId,
-          edition: dto.edition,
-        },
-      });
+        playerId,
+        edition: dto.edition,
+        fifaUpdate: dto.fifaUpdate,
+      },
+    });
 
-      if (existingEdition) {
-        throw new ConflictException(
-          'El jugador ya tiene registrada esta edición FIFA.',
-        );
-      }
+     if (existingEdition) {
+       throw new ConflictException(
+       'El jugador ya tiene registrada esta edición y actualización de FIFA.',
+      );
+     }
 
       const duplicateSkills = dto.skills
         .map((skill) => skill.skill.trim().toLowerCase())
