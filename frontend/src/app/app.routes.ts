@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 
 import { Home } from './pages/home/home';
@@ -12,6 +11,8 @@ import { YoungTalents } from './pages/young-talents/young-talents';
 import { PlayerDetailComponent } from './pages/player-detail/player-detail';
 import { PlayerForm } from './pages/player-form/player-form';
 import { Login } from './pages/login/login';
+
+import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
   {
@@ -30,6 +31,7 @@ export const routes: Routes = [
   {
     path: 'players/new',
     component: PlayerForm,
+    canActivate: [authGuard],
   },
   {
     path: 'players/:id',
@@ -64,7 +66,6 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
-
 
 
 
