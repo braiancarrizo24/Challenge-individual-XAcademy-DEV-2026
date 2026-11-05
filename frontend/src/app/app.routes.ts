@@ -11,12 +11,17 @@ import { Nationalities } from './pages/nationalities/nationalities';
 import { YoungTalents } from './pages/young-talents/young-talents';
 import { PlayerDetailComponent } from './pages/player-detail/player-detail';
 import { PlayerForm } from './pages/player-form/player-form';
+import { Login } from './pages/login/login';
 
 export const routes: Routes = [
   {
     path: '',
     component: Home,
     pathMatch: 'full',
+  },
+  {
+    path: 'login',
+    component: Login,
   },
   {
     path: 'players',
@@ -59,6 +64,8 @@ export const routes: Routes = [
     redirectTo: '',
   },
 ];
+
+
 
 
 
