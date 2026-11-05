@@ -1,7 +1,9 @@
 
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, OnInit, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+
 import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
+import { Auth } from '../../core/services/auth';
 
 type Theme = 'light' | 'dark';
 type Language = 'es' | 'en';
@@ -13,6 +15,9 @@ type Language = 'es' | 'en';
   templateUrl: './home.html',
 })
 export class Home implements OnInit {
+  private readonly authService = inject(Auth);
+  private readonly router = inject(Router);
+
   isDarkMode = true;
   language: Language = 'es';
 
@@ -41,6 +46,15 @@ export class Home implements OnInit {
     this.loadPreferences();
     this.selectFeaturedPlayers();
     this.applyTheme();
+  }
+
+  isAuthenticated(): boolean {
+    return this.authService.isAuthenticated();
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/']);
   }
 
   selectFeaturedPlayers(): void {
@@ -98,4 +112,6 @@ export class Home implements OnInit {
     });
   }
 }
+
+
 
