@@ -1,3 +1,4 @@
+
 import {
   Component,
   inject,
@@ -6,6 +7,7 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  signal,
 } from '@angular/core';
 import { EditionService } from '../../services/edition';
 
@@ -24,7 +26,12 @@ export class EditionSelector implements OnChanges {
 
   @Output() selectedEditionsChange = new EventEmitter<number[]>();
 
-  visibleStartIndex = 0;
+  private readonly visibleStartIndexState = signal(0);
+
+  get visibleStartIndex(): number {
+    return this.visibleStartIndexState();
+  }
+
   readonly visibleEditionsCount = 3;
   readonly maxSelectedEditions = 3;
 
@@ -52,7 +59,10 @@ export class EditionSelector implements OnChanges {
       return;
     }
 
-    if (changes['localMode'] || changes['availableEditions']) {
+    const firstAvailableEditionsChange =
+      changes['availableEditions']?.firstChange;
+
+    if (changes['localMode'] || firstAvailableEditionsChange) {
       this.showSelectedEdition();
     }
   }
@@ -62,9 +72,11 @@ export class EditionSelector implements OnChanges {
     const selectedIndex = this.editions.indexOf(selectedEdition);
 
     if (selectedIndex !== -1) {
-      this.visibleStartIndex = Math.min(
-        selectedIndex,
-        Math.max(0, this.editions.length - this.visibleEditionsCount)
+      this.visibleStartIndexState.set(
+        Math.min(
+          selectedIndex,
+          Math.max(0, this.editions.length - this.visibleEditionsCount)
+        )
       );
     }
   }
@@ -103,7 +115,7 @@ export class EditionSelector implements OnChanges {
 
   previousEditions(): void {
     if (this.visibleStartIndex > 0) {
-      this.visibleStartIndex--;
+      this.visibleStartIndexState.update((index) => index - 1);
     }
   }
 
@@ -112,10 +124,14 @@ export class EditionSelector implements OnChanges {
       this.editions.length - this.visibleEditionsCount;
 
     if (this.visibleStartIndex < lastStartIndex) {
-      this.visibleStartIndex++;
+      this.visibleStartIndexState.update((index) => index + 1);
     }
   }
 }
+
+
+
+
 
 
 

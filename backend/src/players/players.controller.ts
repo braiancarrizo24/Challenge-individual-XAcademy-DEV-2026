@@ -20,18 +20,19 @@ import { UpdatePlayerEditionDto } from './dto/update-player-edition.dto';
 import { JwtAuthGuard } from '../auth/strategies/jwt-auth.guard';
 
 @Controller('players')
-@UseGuards(JwtAuthGuard)
 export class PlayersController {
   constructor(
     private readonly playersService: PlayersService,
   ) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   create(@Body() createPlayerDto: CreatePlayerDto) {
     return this.playersService.create(createPlayerDto);
   }
 
   @Post(':id/editions')
+  @UseGuards(JwtAuthGuard)
   addEdition(
     @Param('id', ParseIntPipe) id: number,
     @Body() createPlayerEditionDto: CreatePlayerEditionDto,
@@ -43,6 +44,7 @@ export class PlayersController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePlayerDto: UpdatePlayerDto,
@@ -51,6 +53,7 @@ export class PlayersController {
   }
 
   @Patch(':id/editions/:editionId')
+  @UseGuards(JwtAuthGuard)
   updateEdition(
     @Param('id', ParseIntPipe) id: number,
     @Param('editionId', ParseIntPipe) editionId: number,
@@ -93,6 +96,8 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
+
+
 
 
 

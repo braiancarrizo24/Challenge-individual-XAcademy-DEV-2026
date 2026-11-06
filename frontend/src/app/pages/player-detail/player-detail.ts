@@ -28,6 +28,7 @@ import {
   PlayerEdition,
   UpdatePlayerEditionPayload,
 } from '../../core/services/players';
+import { Auth } from '../../core/services/auth';
 import { EditionSelector } from '../../core/components/edition-selector/edition-selector';
 import { EditionService } from '../../core/services/edition';
 
@@ -54,6 +55,7 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly playersService = inject(Players);
   private readonly editionService = inject(EditionService);
+  private readonly authService = inject(Auth);
   private readonly changeDetector = inject(ChangeDetectorRef);
 
   private themeObserver?: MutationObserver;
@@ -157,6 +159,13 @@ export class PlayerDetailComponent implements OnInit, OnDestroy {
       ],
     },
   ];
+
+  get canEdit(): boolean {
+    return (
+      this.authService.isAuthenticated() &&
+      this.authService.getCurrentUser()?.role === 'admin'
+    );
+  }
 
   get availableEditions(): number[] {
     return this.player?.editions.map((edition) => edition.edition) ?? [];
@@ -650,6 +659,7 @@ function primaryColor(): string {
     .getPropertyValue('--surface-bg')
     .trim();
 }
+
 
 
 
