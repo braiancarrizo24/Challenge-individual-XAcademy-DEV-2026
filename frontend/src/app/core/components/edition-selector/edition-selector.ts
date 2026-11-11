@@ -6,6 +6,7 @@ import {
   Output,
   EventEmitter,
   OnChanges,
+  OnInit,
   SimpleChanges,
   signal,
 } from '@angular/core';
@@ -17,7 +18,7 @@ import { EditionService } from '../../services/edition';
   templateUrl: './edition-selector.html',
   styleUrl: './edition-selector.css',
 })
-export class EditionSelector implements OnChanges {
+export class EditionSelector implements OnChanges, OnInit {
   readonly editionService = inject(EditionService);
 
   @Input() localMode = false;
@@ -52,6 +53,12 @@ export class EditionSelector implements OnChanges {
       this.visibleStartIndex,
       this.visibleStartIndex + this.visibleEditionsCount
     );
+  }
+
+  ngOnInit(): void {
+    if (!this.localMode) {
+      this.showSelectedEdition();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -128,6 +135,8 @@ export class EditionSelector implements OnChanges {
     }
   }
 }
+
+
 
 
 

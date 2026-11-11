@@ -213,17 +213,17 @@ export class PlayersService {
 
       const existingEdition = await editionRepository.findOne({
         where: {
-        playerId,
-        edition: dto.edition,
-        fifaUpdate: dto.fifaUpdate,
-      },
-    });
+          playerId,
+          edition: dto.edition,
+          fifaUpdate: dto.fifaUpdate,
+        },
+      });
 
-     if (existingEdition) {
-       throw new ConflictException(
-       'El jugador ya tiene registrada esta edición y actualización de FIFA.',
-      );
-     }
+      if (existingEdition) {
+        throw new ConflictException(
+          'El jugador ya tiene registrada esta edición y actualización de FIFA.',
+        );
+      }
 
       const duplicateSkills = dto.skills
         .map((skill) => skill.skill.trim().toLowerCase())
@@ -511,12 +511,19 @@ export class PlayersService {
         INNER JOIN player_editions pe
           ON pe.player_id = p.id
         WHERE (? IS NULL OR p.gender = ?)
-          AND pe.edition BETWEEN 15 AND 23
+          AND (
+            (? IS NOT NULL AND pe.edition = ?)
+            OR
+            (? IS NULL AND pe.edition BETWEEN 15 AND 23)
+          )
           AND ${filters}
         `,
         [
           safeGender,
           safeGender,
+          safeEdition,
+          safeEdition,
+          safeEdition,
           ...filterParams,
         ],
       );
@@ -543,7 +550,11 @@ export class PlayersService {
         INNER JOIN player_editions pe
           ON pe.player_id = p.id
         WHERE (? IS NULL OR p.gender = ?)
-          AND pe.edition BETWEEN 15 AND 23
+          AND (
+            (? IS NOT NULL AND pe.edition = ?)
+            OR
+            (? IS NULL AND pe.edition BETWEEN 15 AND 23)
+          )
           AND ${filters}
         ORDER BY p.name ASC, pe.edition DESC, pe.fifa_update DESC, pe.id DESC
         ${paginationSql}
@@ -551,6 +562,9 @@ export class PlayersService {
         [
           safeGender,
           safeGender,
+          safeEdition,
+          safeEdition,
+          safeEdition,
           ...filterParams,
           ...paginationParams,
         ],
@@ -765,6 +779,8 @@ export class PlayersService {
     };
   }
 }
+
+
 
 
 
