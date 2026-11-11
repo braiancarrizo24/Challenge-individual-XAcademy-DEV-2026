@@ -75,8 +75,16 @@ export class PlayersController {
     @Query('name') name?: string,
     @Query('club') club?: string,
     @Query('position') position?: string,
+    @Query('positionGroup') positionGroup?: string,
     @Query('exportAll') exportAll?: string,
+    @Query('sortBy') sortBy?: string,
+    @Query('sortOrder') sortOrder?: string,
   ) {
+    console.log('[PlayersController.findAll] Query params:', {
+      sortBy,
+      sortOrder,
+    });
+
     return this.playersService.findAll(
       page,
       limit,
@@ -85,7 +93,10 @@ export class PlayersController {
       name,
       club,
       position,
+      positionGroup,
       exportAll === 'true',
+      sortBy,
+      sortOrder,
     );
   }
 
@@ -96,6 +107,9 @@ export class PlayersController {
     return this.playersService.findOne(id);
   }
 }
+
+
+
 
 
 

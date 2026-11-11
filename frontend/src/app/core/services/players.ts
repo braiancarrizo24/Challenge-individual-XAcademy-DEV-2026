@@ -98,6 +98,14 @@ export interface UpdatePlayerEditionPayload {
 }
 
 export type PlayerGender = 'male' | 'female';
+export type PlayerPositionGroup =
+  | 'goalkeepers'
+  | 'defenders'
+  | 'midfielders'
+  | 'forwards';
+
+export type PlayerSortBy = 'name' | 'rating';
+export type PlayerSortOrder = 'ASC' | 'DESC';
 
 @Injectable({
   providedIn: 'root',
@@ -114,10 +122,15 @@ export class Players {
     name?: string,
     club?: string,
     position?: string,
+    positionGroup?: PlayerPositionGroup,
+    sortBy: PlayerSortBy = 'name',
+    sortOrder: PlayerSortOrder = 'ASC',
   ): Observable<PlayersResponse> {
     let params = new HttpParams()
       .set('page', page)
-      .set('limit', limit);
+      .set('limit', limit)
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
 
     if (gender) {
       params = params.set('gender', gender);
@@ -139,6 +152,10 @@ export class Players {
       params = params.set('position', position.trim());
     }
 
+    if (positionGroup) {
+      params = params.set('positionGroup', positionGroup);
+    }
+
     return this.http.get<PlayersResponse>(this.apiUrl, { params });
   }
 
@@ -148,10 +165,15 @@ export class Players {
     name?: string,
     club?: string,
     position?: string,
+    positionGroup?: PlayerPositionGroup,
+    sortBy: PlayerSortBy = 'name',
+    sortOrder: PlayerSortOrder = 'ASC',
   ): Observable<PlayersResponse> {
     let params = new HttpParams()
       .set('gender', gender)
-      .set('exportAll', 'true');
+      .set('exportAll', 'true')
+      .set('sortBy', sortBy)
+      .set('sortOrder', sortOrder);
 
     if (edition !== undefined) {
       params = params.set('edition', edition);
@@ -167,6 +189,10 @@ export class Players {
 
     if (position?.trim()) {
       params = params.set('position', position.trim());
+    }
+
+    if (positionGroup) {
+      params = params.set('positionGroup', positionGroup);
     }
 
     return this.http.get<PlayersResponse>(this.apiUrl, { params });
@@ -198,6 +224,8 @@ export class Players {
     );
   }
 }
+
+
 
 
 

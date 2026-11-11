@@ -215,13 +215,12 @@ export class PlayersService {
         where: {
           playerId,
           edition: dto.edition,
-          fifaUpdate: dto.fifaUpdate,
         },
       });
 
       if (existingEdition) {
         throw new ConflictException(
-          'El jugador ya tiene registrada esta edición y actualización de FIFA.',
+          'El jugador ya tiene registrada esta edición FIFA.',
         );
       }
 
@@ -451,7 +450,10 @@ export class PlayersService {
     name?: string,
     club?: string,
     position?: string,
-    exportAll = false,
+    positionGroup?: string,
+    exportAll: boolean = false,
+    sortBy?: string,
+    sortOrder?: string,
   ): Promise<{
     data: any[];
     total: number;
@@ -481,14 +483,70 @@ export class PlayersService {
     const safeClub = club?.trim() || null;
     const safePosition = position?.trim() || null;
 
-    const hasFilters = Boolean(
-      safeName || safeClub || safePosition,
-    );
+    const allowedSortFields: Record<string, string> = {
+      name: 'ranked.name',
+      rating: 'ranked.rating',
+    };
+
+    const normalizedSortBy = sortBy?.trim().toLowerCase() || 'name';
+    const normalizedSortOrder = sortOrder?.trim().toUpperCase() || 'ASC';
+
+    if (!Object.prototype.hasOwnProperty.call(allowedSortFields, normalizedSortBy)) {
+      throw new BadRequestException(
+        'El campo de ordenamiento no es válido.',
+      );
+    }
+
+    if (normalizedSortOrder !== 'ASC' && normalizedSortOrder !== 'DESC') {
+      throw new BadRequestException(
+        'El sentido del ordenamiento no es válido.',
+      );
+    }
+
+    const sortColumn = allowedSortFields[normalizedSortBy];
+    const sortDirection = normalizedSortOrder;
+
+    const positionGroups: Record<string, string[]> = {
+      goalkeepers: ['GK'],
+      defenders: ['CB', 'LB', 'RB', 'LWB', 'RWB', 'SW'],
+      midfielders: ['CDM', 'CM', 'CAM', 'LM', 'RM'],
+      forwards: ['LW', 'RW', 'LF', 'RF', 'CF', 'ST'],
+    };
+
+    const normalizedPositionGroup =
+      positionGroup?.trim().toLowerCase() || null;
+
+    if (
+      normalizedPositionGroup &&
+      !Object.prototype.hasOwnProperty.call(
+        positionGroups,
+        normalizedPositionGroup,
+      )
+    ) {
+      throw new BadRequestException(
+        'La categoría de posición no es válida.',
+      );
+    }
+
+    const positionGroupCodes = normalizedPositionGroup
+      ? positionGroups[normalizedPositionGroup]
+      : [];
+
+    const positionGroupFilter =
+      positionGroupCodes.length > 0
+        ? `AND (${positionGroupCodes
+            .map(
+              () =>
+                "FIND_IN_SET(?, REPLACE(ranked.position, ', ', ',')) > 0",
+            )
+            .join(' OR ')})`
+        : '';
 
     const filters = `
-      (? IS NULL OR p.name LIKE CONCAT('%', ?, '%'))
-      AND (? IS NULL OR pe.club LIKE CONCAT('%', ?, '%'))
-      AND (? IS NULL OR pe.position LIKE CONCAT('%', ?, '%'))
+      (? IS NULL OR ranked.name LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR ranked.club LIKE CONCAT('%', ?, '%'))
+      AND (? IS NULL OR ranked.position LIKE CONCAT('%', ?, '%'))
+      ${positionGroupFilter}
     `;
 
     const filterParams = [
@@ -498,197 +556,96 @@ export class PlayersService {
       safeClub,
       safePosition,
       safePosition,
+      ...positionGroupCodes,
     ];
 
-    let countResult: any[];
-    let data: any[];
+    const editionFilter =
+      safeEdition !== null ? 'AND pe.edition = ?' : '';
 
-    if (hasFilters) {
-      countResult = await this.playersRepository.query(
-        `
-        SELECT COUNT(*) AS total
-        FROM players p
-        INNER JOIN player_editions pe
-          ON pe.player_id = p.id
-        WHERE (? IS NULL OR p.gender = ?)
-          AND (
-            (? IS NOT NULL AND pe.edition = ?)
-            OR
-            (? IS NULL AND pe.edition BETWEEN 15 AND 23)
-          )
-          AND ${filters}
-        `,
-        [
-          safeGender,
-          safeGender,
-          safeEdition,
-          safeEdition,
-          safeEdition,
-          ...filterParams,
-        ],
-      );
+    const editionParams =
+      safeEdition !== null ? [safeEdition] : [];
 
-      data = await this.playersRepository.query(
-        `
-        SELECT
-          p.id,
-          pe.id AS playerEditionId,
-          p.source_player_id AS sourcePlayerId,
-          p.name,
-          p.nationality,
-          p.gender,
-          pe.edition,
-          pe.fifa_update AS fifaUpdate,
-          pe.age,
-          pe.club,
-          pe.position,
-          pe.rating,
-          pe.potential,
-          pe.value_eur AS valueEur,
-          pe.wage_eur AS wageEur
-        FROM players p
-        INNER JOIN player_editions pe
-          ON pe.player_id = p.id
-        WHERE (? IS NULL OR p.gender = ?)
-          AND (
-            (? IS NOT NULL AND pe.edition = ?)
-            OR
-            (? IS NULL AND pe.edition BETWEEN 15 AND 23)
-          )
-          AND ${filters}
-        ORDER BY p.name ASC, pe.edition DESC, pe.fifa_update DESC, pe.id DESC
-        ${paginationSql}
-        `,
-        [
-          safeGender,
-          safeGender,
-          safeEdition,
-          safeEdition,
-          safeEdition,
-          ...filterParams,
-          ...paginationParams,
-        ],
-      );
-    } else if (safeEdition !== null) {
-      countResult = await this.playersRepository.query(
-        `
-        SELECT COUNT(*) AS total
-        FROM players p
-        INNER JOIN player_editions pe
-          ON pe.player_id = p.id
-        WHERE (? IS NULL OR p.gender = ?)
-          AND pe.edition = ?
-        `,
-        [
-          safeGender,
-          safeGender,
-          safeEdition,
-        ],
-      );
+    const latestVersionQuery = `
+      SELECT
+        p.id,
+        pe.id AS playerEditionId,
+        p.source_player_id AS sourcePlayerId,
+        p.name,
+        p.nationality,
+        p.gender,
+        pe.edition,
+        pe.fifa_update AS fifaUpdate,
+        pe.age,
+        pe.club,
+        pe.position,
+        pe.rating,
+        pe.potential,
+        pe.value_eur AS valueEur,
+        pe.wage_eur AS wageEur,
+        ROW_NUMBER() OVER (
+          PARTITION BY p.id
+          ORDER BY
+            pe.edition DESC,
+            pe.fifa_update DESC,
+            pe.id DESC
+        ) AS versionNumber
+      FROM players p
+      INNER JOIN player_editions pe
+        ON pe.player_id = p.id
+      WHERE (? IS NULL OR p.gender = ?)
+        ${editionFilter}
+    `;
 
-      data = await this.playersRepository.query(
-        `
-        SELECT
-          p.id,
-          pe.id AS playerEditionId,
-          p.source_player_id AS sourcePlayerId,
-          p.name,
-          p.nationality,
-          p.gender,
-          pe.edition,
-          pe.fifa_update AS fifaUpdate,
-          pe.age,
-          pe.club,
-          pe.position,
-          pe.rating,
-          pe.potential,
-          pe.value_eur AS valueEur,
-          pe.wage_eur AS wageEur
-        FROM players p
-        INNER JOIN player_editions pe
-          ON pe.player_id = p.id
-        WHERE (? IS NULL OR p.gender = ?)
-          AND pe.edition = ?
-        ORDER BY p.name ASC, p.id ASC, pe.fifa_update DESC, pe.id DESC
-        ${paginationSql}
-        `,
-        [
-          safeGender,
-          safeGender,
-          safeEdition,
-          ...paginationParams,
-        ],
-      );
-    } else {
-      const latestVersionQuery = `
-        SELECT
-          p.id,
-          pe.id AS player_edition_id,
-          p.source_player_id,
-          p.name,
-          p.nationality,
-          p.gender,
-          pe.edition,
-          pe.fifa_update,
-          pe.age,
-          pe.club,
-          pe.position,
-          pe.rating,
-          pe.potential,
-          pe.value_eur,
-          pe.wage_eur,
-          ROW_NUMBER() OVER (
-            PARTITION BY p.id
-            ORDER BY pe.edition DESC, pe.fifa_update DESC, pe.id DESC
-          ) AS version_number
-        FROM players p
-        INNER JOIN player_editions pe
-          ON pe.player_id = p.id
-        WHERE (? IS NULL OR p.gender = ?)
-      `;
+    const rankedQuery = `
+      SELECT *
+      FROM (${latestVersionQuery}) AS versions
+      WHERE versions.versionNumber = 1
+    `;
 
-      countResult = await this.playersRepository.query(
-        `
-        SELECT COUNT(*) AS total
-        FROM (${latestVersionQuery}) AS ranked
-        WHERE ranked.version_number = 1
-        `,
-        [
-          safeGender,
-          safeGender,
-        ],
-      );
+    const finalQuery = `
+      SELECT ranked.*
+      FROM (${rankedQuery}) AS ranked
+      WHERE ${filters}
+    `;
 
-      data = await this.playersRepository.query(
-        `
-        SELECT
-          ranked.id,
-          ranked.player_edition_id AS playerEditionId,
-          ranked.source_player_id AS sourcePlayerId,
-          ranked.name,
-          ranked.nationality,
-          ranked.gender,
-          ranked.edition,
-          ranked.fifa_update AS fifaUpdate,
-          ranked.age,
-          ranked.club,
-          ranked.position,
-          ranked.rating,
-          ranked.potential,
-          ranked.value_eur AS valueEur,
-          ranked.wage_eur AS wageEur
-        FROM (${latestVersionQuery}) AS ranked
-        WHERE ranked.version_number = 1
-        ORDER BY ranked.name ASC, ranked.id ASC
-        ${paginationSql}
-        `,
-        [
-          safeGender,
-          safeGender,
-          ...paginationParams,
-        ],
-      );
-    }
+    const countResult = await this.playersRepository.query(
+      `
+      SELECT COUNT(*) AS total
+      FROM (${finalQuery}) AS filtered
+      `,
+      [
+        safeGender,
+        safeGender,
+        ...editionParams,
+        ...filterParams,
+      ],
+    );
+
+    console.log('[PlayersService.findAll] Ordenamiento:', {
+      sortBy,
+      sortOrder,
+      normalizedSortBy,
+      normalizedSortOrder,
+      sortColumn,
+      sortDirection,
+    });
+
+    const data = await this.playersRepository.query(
+      `
+      ${finalQuery}
+      ORDER BY ${sortColumn} ${sortDirection},
+        ranked.name ASC,
+        ranked.id ASC
+      ${paginationSql}
+      `,
+      [
+        safeGender,
+        safeGender,
+        ...editionParams,
+        ...filterParams,
+        ...paginationParams,
+      ],
+    );
 
     const total = Number(countResult[0].total);
 
@@ -779,6 +736,12 @@ export class PlayersService {
     };
   }
 }
+
+
+
+
+
+
 
 
 
