@@ -58,7 +58,10 @@ interface SortOption {
   selector: 'app-players-list',
   imports: [CommonModule, FormsModule, EditionSelector, RouterLink],
   templateUrl: './players-list.html',
-  styleUrl: './players-list.css',
+  styleUrls: [
+    './players-list.css',
+    './players-list-responsive.css',
+  ],
 })
 export class PlayersList implements OnInit, OnDestroy {
   private readonly playersService = inject(Players);
@@ -653,6 +656,7 @@ export class PlayersList implements OnInit, OnDestroy {
     }
   }
 }
+
 
 
 

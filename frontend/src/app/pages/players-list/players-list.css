@@ -1,5 +1,4 @@
 
-
 .players-page {
   max-width: 1600px;
   margin: 0 auto;
@@ -85,6 +84,103 @@ header#top .header-search {
   width: 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.header-search input {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.header-search:focus-within {
+  border-color: var(--accent-color);
+}
+
+.header-search button:focus-visible {
+  outline: 2px solid var(--text-primary);
+  outline-offset: 3px;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  right: 0;
+  z-index: 1200;
+  max-height: 420px;
+  overflow-y: auto;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  background: var(--surface-bg);
+  color: var(--text-primary);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 25%);
+}
+
+.search-result-group + .search-result-group {
+  margin-top: 18px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border-color);
+}
+
+.search-result-group h3 {
+  margin: 0 0 10px;
+  color: var(--accent-color);
+  font-size: 0.95rem;
+}
+
+.search-result-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 10px;
+  border-radius: 8px;
+  color: var(--text-primary);
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.search-result-item:hover {
+  background: var(--surface-hover);
+}
+
+.search-result-item:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+.search-result-name {
+  min-width: 0;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.search-result-details {
+  grid-column: 1;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+.search-result-rating {
+  grid-column: 2;
+  grid-row: 1 / 3;
+  color: var(--accent-color);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.search-status,
+.search-empty {
+  margin: 8px 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.search-error {
+  color: #ef4444;
 }
 
 .edition-area {
@@ -617,127 +713,6 @@ header#top .header-search {
   cursor: not-allowed;
 }
 
-@media (max-width: 1200px) {
-  .players-layout {
-    grid-template-columns: minmax(220px, 255px) minmax(0, 1fr);
-    gap: 18px;
-  }
-
-  .players-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-@media (max-width: 900px) {
-  .players-layout {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .filters-sidebar {
-    order: 1;
-  }
-
-  .players-results {
-    order: 2;
-  }
-
-  .players-filters {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: start;
-  }
-
-  .apply-filters-button {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 700px) {
-  header#top .header-search-container {
-    width: 100%;
-    min-width: 0;
-    flex: 1 1 100%;
-  }
-
-  .players-page .page-header {
-    align-items: flex-start;
-    flex-direction: column;
-    padding: 22px;
-  }
-
-  .results-toolbar {
-    align-items: flex-start;
-    flex-direction: column;
-  }
-
-  .results-actions {
-    width: 100%;
-  }
-
-  .sort-control {
-    width: 100%;
-  }
-
-  .export-button {
-    flex: 1;
-  }
-
-  .position-tabs {
-    gap: 5px;
-    padding: 5px;
-  }
-
-  .position-tabs button {
-    padding: 10px 14px;
-    font-size: 0.82rem;
-  }
-}
-
-@media (max-width: 560px) {
-  .players-filters {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .apply-filters-button {
-    grid-column: auto;
-  }
-
-  .players-grid {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .results-actions {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .view-switch {
-    width: 100%;
-  }
-
-  .view-switch button {
-    flex: 1;
-    justify-content: center;
-  }
-
-  .export-button {
-    width: 100%;
-  }
-
-  .filters-sidebar {
-    padding: 17px;
-  }
-
-  .pagination {
-    gap: 10px;
-  }
-
-  .position-tabs {
-    margin-bottom: 18px;
-  }
-}
-
-
 .filter-section > h3 {
   margin: 0;
   color: var(--text-primary);
@@ -800,6 +775,8 @@ header#top .header-search {
   gap: 13px;
   padding-top: 16px;
 }
+
+
 
 
 
