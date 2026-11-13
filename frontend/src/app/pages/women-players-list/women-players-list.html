@@ -1,158 +1,715 @@
-<section class="players-page">
-  <header class="page-header">
-    <h1>Jugadoras de FIFA</h1>
-    <p>
-      Explorá las futbolistas registradas en la base de datos
-      y consultá sus estadísticas de FIFA.
-    </p>
 
-    <a
-      class="create-player-button"
-      [routerLink]="['/players/new']"
-      [queryParams]="{ gender: 'female' }"
-    >
-      + Crear jugadora
-    </a>
-  </header>
-
-  <app-edition-selector />
-
-  <form class="players-filters" (ngSubmit)="searchPlayers()">
-    <div class="filter-field">
-      <label for="nameFilter">Nombre de la jugadora</label>
-      <input
-        id="nameFilter"
-        type="text"
-        name="nameFilter"
-        [(ngModel)]="nameFilter"
-        placeholder="Buscar por nombre..."
-      />
-    </div>
-
-    <div class="filter-field">
-      <label for="clubFilter">Club</label>
-      <input
-        id="clubFilter"
-        type="text"
-        name="clubFilter"
-        [(ngModel)]="clubFilter"
-        placeholder="Buscar por club..."
-      />
-    </div>
-
-    <div class="filter-field">
-      <label for="positionFilter">Posición</label>
-      <input
-        id="positionFilter"
-        type="text"
-        name="positionFilter"
-        [(ngModel)]="positionFilter"
-        placeholder="Ejemplo: ST, GK, CM..."
-      />
-    </div>
-
-    <button type="submit" [disabled]="loading">
-      Buscar jugadoras
-    </button>
-  </form>
-
-  <div class="export-actions">
-    <button
-      type="button"
-      (click)="exportCsv()"
-      [disabled]="loading || exporting || totalPlayers === 0"
-    >
-      {{ exporting ? 'Generando CSV...' : 'Exportar CSV' }}
-    </button>
+<header id="top">
+  <div class="header-brand">
+    <h1><a routerLink="/"><span>FIFA</span> Stats</a></h1>
   </div>
 
-  @if (loading) {
-    <p class="status-message">Cargando jugadoras...</p>
-  } @else if (error) {
-    <p class="error-message">{{ error }}</p>
-  } @else {
-    <p class="results-count">
-      Jugadoras encontradas: {{ totalPlayers }}
-    </p>
+  <div class="header-search-container">
+    <form class="header-search" role="search" (submit)="$event.preventDefault()">
+      <input
+        type="search"
+        placeholder="Buscar jugadores y jugadoras..."
+        aria-label="Buscar jugadores y jugadoras por nombre"
+        [value]="searchName"
+        (input)="onSearchNameChange($any($event.target).value)"
+      />
 
-    <div class="players-grid">
-      @for (player of players; track player.playerEditionId) {
-        <article class="player-card">
-          <header class="player-card-header">
-            <h2>
-              <a
-                [routerLink]="['/players', player.id]"
-                [queryParams]="{ editionId: player.playerEditionId }"
-              >
-                {{ player.name }}
-              </a>
-            </h2>
+      @if (searchName) {
+        <button
+          type="button"
+          aria-label="Limpiar búsqueda"
+          title="Limpiar búsqueda"
+          (click)="clearSearch()"
+        >
+          ✕
+        </button>
+      }
+    </form>
 
-            <span class="player-rating">
-              {{ player.rating ?? 'N/D' }}
-            </span>
-          </header>
-
-          <p>
-            <strong>Nacionalidad:</strong>
-            {{ player.nationality || 'No disponible' }}
+    @if (showSearchResults) {
+      <div class="search-results">
+        @if (isSearching) {
+          <p class="search-status">Buscando jugadores y jugadoras...</p>
+        } @else if (searchError) {
+          <p class="search-status search-error">
+            No se pudieron cargar los resultados. Intentá nuevamente.
           </p>
+        } @else {
+          <section class="search-result-group">
+            <h3>Jugadores</h3>
+            @if (searchResults.male.length > 0) {
+              @for (player of searchResults.male; track player.id) {
+                <a class="search-result-item" [routerLink]="['/players', player.id]">
+                  <span class="search-result-name">{{ player.name }}</span>
+                  <span class="search-result-details">
+                    {{ player.club || 'Club no disponible' }} ·
+                    {{ player.position || 'Posición no disponible' }}
+                  </span>
+                  <span class="search-result-rating">{{ player.rating ?? '—' }}</span>
+                </a>
+              }
+            } @else {
+              <p class="search-empty">No se encontraron jugadores.</p>
+            }
+          </section>
 
-          <p>
-            <strong>Edición:</strong>
-            FIFA {{ player.edition }}
-          </p>
+          <section class="search-result-group">
+            <h3>Jugadoras</h3>
+            @if (searchResults.female.length > 0) {
+              @for (player of searchResults.female; track player.id) {
+                <a class="search-result-item" [routerLink]="['/players', player.id]">
+                  <span class="search-result-name">{{ player.name }}</span>
+                  <span class="search-result-details">
+                    {{ player.club || 'Club no disponible' }} ·
+                    {{ player.position || 'Posición no disponible' }}
+                  </span>
+                  <span class="search-result-rating">{{ player.rating ?? '—' }}</span>
+                </a>
+              }
+            } @else {
+              <p class="search-empty">No se encontraron jugadoras.</p>
+            }
+          </section>
+        }
+      </div>
+    }
+  </div>
 
-          <p>
-            <strong>Edad:</strong>
-            {{ player.age ?? 'No disponible' }}
-          </p>
+  <nav>
+    <p class="header-tagline">Estadísticas del fútbol en cada edición de FIFA</p>
+    <a routerLink="/players">Jugadores</a>
+    <a routerLink="/players-women">Jugadoras</a>
+    <a routerLink="/teams">Equipos</a>
 
-          <p>
-            <strong>Club:</strong>
-            {{ player.club || 'No disponible' }}
-          </p>
+    <details class="nav-dropdown">
+      <summary>Más secciones</summary>
+      <div class="dropdown-menu">
+        <a routerLink="/comparisons">Comparativas</a>
+        <a routerLink="/leagues">Ligas</a>
+        <a routerLink="/nationalities">Nacionalidades</a>
+        <a routerLink="/young-talents">Jóvenes promesas</a>
+      </div>
+    </details>
 
-          <p>
-            <strong>Posición:</strong>
-            {{ player.position || 'No disponible' }}
-          </p>
+    <div class="header-controls">
+      <div class="header-control control-dropdown">
+        <button
+          type="button"
+          (click)="setTheme(false)"
+          aria-label="Tema claro"
+          title="Tema claro"
+        >
+          ☀️
+        </button>
+        <button
+          type="button"
+          (click)="setTheme(true)"
+          aria-label="Tema oscuro"
+          title="Tema oscuro"
+        >
+          🌙
+        </button>
+      </div>
 
-          <p>
-            <strong>Potencial:</strong>
-            {{ player.potential ?? 'No disponible' }}
-          </p>
-        </article>
-      } @empty {
-        <p>No se encontraron jugadoras.</p>
+      <div class="header-control control-dropdown">
+        <button
+          type="button"
+          (click)="toggleLanguage()"
+          aria-label="Cambiar idioma"
+          title="Cambiar idioma"
+        >
+          {{ language === 'es' ? 'ES' : 'EN' }}
+        </button>
+      </div>
+
+      @if (isAuthenticated()) {
+        <details class="header-control">
+          <summary title="Opciones de administrador">
+            <span aria-hidden="true">👤</span>
+            <span>Administrador</span>
+            <span class="control-arrow">▾</span>
+          </summary>
+          <div class="control-dropdown">
+            <button type="button" (click)="logout()">
+              <span aria-hidden="true">↪</span>
+              Cerrar sesión
+            </button>
+          </div>
+        </details>
       }
     </div>
+  </nav>
+</header>
 
-    @if (totalPlayers > 0) {
-      <nav class="pagination" aria-label="Paginación de jugadoras">
-        <button
-          type="button"
-          (click)="previousPage()"
-          [disabled]="currentPage === 1 || loading"
-        >
-          Anterior
-        </button>
+<main>
+  <section class="players-page">
+    <header class="page-header">
+      <div>
+        <p class="page-eyebrow">BASE DE DATOS FIFA</p>
+        <h1>Jugadoras de FIFA</h1>
+        <p>
+          Explorá futbolistas, clubes y estadísticas a través de las distintas
+          ediciones.
+        </p>
+      </div>
 
-        <span>
-          Página {{ currentPage }} de {{ totalPages }}
-        </span>
+      <a
+        class="create-player-button"
+        [routerLink]="['/players/new']"
+        [queryParams]="{ gender: 'female' }"
+      >
+        + Crear jugadora
+      </a>
+    </header>
 
-        <button
-          type="button"
-          (click)="nextPage()"
-          [disabled]="currentPage >= totalPages || loading"
-        >
-          Siguiente
-        </button>
-      </nav>
-    }
-  }
-</section>
+    <div class="edition-area">
+      <app-edition-selector />
+    </div>
+
+    <div class="players-layout">
+      <aside class="filters-sidebar">
+        <div class="filters-heading">
+          <div>
+            <span class="filters-eyebrow">PERSONALIZÁ TU BÚSQUEDA</span>
+            <h2>Filtros</h2>
+          </div>
+          <span class="filters-icon">☷</span>
+        </div>
+
+        <form class="players-filters" (ngSubmit)="searchPlayers()">
+          <section class="filter-section">
+            <h3>Datos generales</h3>
+
+            <div class="filter-field">
+              <label for="nameFilter">Nombre de la jugadora</label>
+              <input
+                id="nameFilter"
+                type="text"
+                name="nameFilter"
+                [(ngModel)]="nameFilter"
+                placeholder="Buscar por nombre..."
+              />
+            </div>
+
+            <div class="filter-field">
+              <label for="nationalityFilter">Nacionalidad</label>
+              <input
+                id="nationalityFilter"
+                type="text"
+                placeholder="Próximamente"
+                disabled
+              />
+            </div>
+
+            <div class="filter-field">
+              <label for="ageFilter">Edad</label>
+              <div class="filter-range">
+                <input id="ageFilter" type="number" placeholder="Mín." disabled />
+                <input type="number" placeholder="Máx." disabled />
+              </div>
+            </div>
+
+            <div class="filter-field">
+              <label>Género</label>
+              <select disabled>
+                <option>Femenino</option>
+                <option>Masculino</option>
+              </select>
+            </div>
+          </section>
+
+          <details class="filter-section filter-collapsible">
+            <summary>Club y competición</summary>
+            <div class="filter-section-content">
+              <div class="filter-field">
+                <label for="clubFilter">Club</label>
+                <input
+                  id="clubFilter"
+                  type="text"
+                  name="clubFilter"
+                  [(ngModel)]="clubFilter"
+                  placeholder="Buscar por club..."
+                />
+              </div>
+
+              <div class="filter-field">
+                <label>Liga</label>
+                <input type="text" placeholder="Próximamente" disabled />
+              </div>
+
+              <div class="filter-field">
+                <label>Equipo nacional</label>
+                <input type="text" placeholder="Próximamente" disabled />
+              </div>
+            </div>
+          </details>
+
+          <section class="filter-section">
+            <h3>Posición</h3>
+            <div class="filter-field">
+              <label for="positionFilter">Posición principal</label>
+              <input
+                id="positionFilter"
+                type="text"
+                name="positionFilter"
+                [(ngModel)]="positionFilter"
+                placeholder="Ej. ST, GK, CM..."
+              />
+            </div>
+            <div class="filter-field">
+              <label>Posiciones alternativas</label>
+              <input type="text" placeholder="Próximamente" disabled />
+            </div>
+          </section>
+
+          <details class="filter-section filter-collapsible">
+            <summary>Características físicas</summary>
+            <div class="filter-section-content">
+              <div class="filter-field">
+                <label>Altura (cm)</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Peso (kg)</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Pie hábil</label>
+                <select disabled>
+                  <option>Todos</option>
+                  <option>Derecho</option>
+                  <option>Izquierdo</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
+          <section class="filter-section">
+            <h3>Valoraciones</h3>
+            <div class="filter-field">
+              <label>Media general</label>
+              <div class="filter-range">
+                <input type="number" placeholder="Mín." disabled />
+                <input type="number" placeholder="Máx." disabled />
+              </div>
+            </div>
+
+            <div class="filter-field">
+              <label>Potencial</label>
+              <div class="filter-range">
+                <input type="number" placeholder="Mín." disabled />
+                <input type="number" placeholder="Máx." disabled />
+              </div>
+            </div>
+          </section>
+
+          <details class="filter-section filter-collapsible">
+            <summary>Atributos</summary>
+            <div class="filter-section-content">
+              <div class="filter-field">
+                <label>Ritmo</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Tiro</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Pase</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Regate</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Defensa</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Físico</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+            </div>
+          </details>
+
+          <details class="filter-section filter-collapsible">
+            <summary>Otros criterios</summary>
+            <div class="filter-section-content">
+              <div class="filter-field">
+                <label>Pierna mala</label>
+                <select disabled>
+                  <option>Todos</option>
+                  <option>1 estrella</option>
+                  <option>2 estrellas</option>
+                  <option>3 estrellas</option>
+                  <option>4 estrellas</option>
+                  <option>5 estrellas</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label>Filigranas</label>
+                <select disabled>
+                  <option>Todos</option>
+                  <option>1 estrella</option>
+                  <option>2 estrellas</option>
+                  <option>3 estrellas</option>
+                  <option>4 estrellas</option>
+                  <option>5 estrellas</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label>Reputación internacional</label>
+                <div class="filter-range">
+                  <input type="number" placeholder="Mín." disabled />
+                  <input type="number" placeholder="Máx." disabled />
+                </div>
+              </div>
+
+              <div class="filter-field">
+                <label>Ritmo de trabajo ofensivo</label>
+                <select disabled>
+                  <option>Todos</option>
+                  <option>Bajo</option>
+                  <option>Medio</option>
+                  <option>Alto</option>
+                </select>
+              </div>
+
+              <div class="filter-field">
+                <label>Ritmo de trabajo defensivo</label>
+                <select disabled>
+                  <option>Todos</option>
+                  <option>Bajo</option>
+                  <option>Medio</option>
+                  <option>Alto</option>
+                </select>
+              </div>
+            </div>
+          </details>
+
+          <button
+            class="apply-filters-button"
+            type="submit"
+            [disabled]="loading"
+          >
+            Aplicar filtros
+          </button>
+        </form>
+      </aside>
+
+      <section class="players-results">
+        <div class="results-toolbar">
+          <div class="results-heading">
+            <span class="results-eyebrow">EXPLORAR BASE DE DATOS</span>
+            <h2>Listado de jugadoras</h2>
+            <p class="results-count">
+              {{ totalPlayers }} jugadoras encontradas
+            </p>
+          </div>
+
+          <div class="results-actions">
+            <div class="sort-control">
+              <label for="playerSort">Ordenar por</label>
+              <select
+                id="playerSort"
+                name="playerSort"
+                [(ngModel)]="selectedSort"
+                (ngModelChange)="onSortChange($event)"
+              >
+                @for (option of sortOptions; track option.sortBy + '-' + option.sortOrder) {
+                  <option [value]="option.sortBy + '-' + option.sortOrder.toLowerCase()">
+                    {{ option.label }}
+                  </option>
+                }
+              </select>
+            </div>
+
+            <div class="view-switch" aria-label="Modo de visualización">
+              <button
+                type="button"
+                [class.active]="viewMode === 'cards'"
+                [attr.aria-pressed]="viewMode === 'cards'"
+                (click)="setViewMode('cards')"
+              >
+                <span aria-hidden="true">▦</span>
+                Tarjetas
+              </button>
+              <button
+                type="button"
+                [class.active]="viewMode === 'list'"
+                [attr.aria-pressed]="viewMode === 'list'"
+                (click)="setViewMode('list')"
+              >
+                <span aria-hidden="true">☷</span>
+                Lista
+              </button>
+            </div>
+
+            <button
+              class="export-button"
+              type="button"
+              (click)="exportCsv()"
+              [disabled]="loading || exporting || totalPlayers === 0"
+            >
+              {{ exporting ? 'Generando CSV...' : '↓ Exportar CSV' }}
+            </button>
+          </div>
+        </div>
+
+        <nav class="position-tabs" aria-label="Filtrar jugadoras por posición">
+          <button
+            type="button"
+            [class.active]="selectedPositionGroup === null"
+            [attr.aria-pressed]="selectedPositionGroup === null"
+            (click)="selectPositionGroup(null)"
+          >
+            Todas
+          </button>
+          <button
+            type="button"
+            [class.active]="selectedPositionGroup === 'goalkeepers'"
+            [attr.aria-pressed]="selectedPositionGroup === 'goalkeepers'"
+            (click)="selectPositionGroup('goalkeepers')"
+          >
+            Arqueras
+          </button>
+          <button
+            type="button"
+            [class.active]="selectedPositionGroup === 'defenders'"
+            [attr.aria-pressed]="selectedPositionGroup === 'defenders'"
+            (click)="selectPositionGroup('defenders')"
+          >
+            Defensas
+          </button>
+          <button
+            type="button"
+            [class.active]="selectedPositionGroup === 'midfielders'"
+            [attr.aria-pressed]="selectedPositionGroup === 'midfielders'"
+            (click)="selectPositionGroup('midfielders')"
+          >
+            Mediocampistas
+          </button>
+          <button
+            type="button"
+            [class.active]="selectedPositionGroup === 'forwards'"
+            [attr.aria-pressed]="selectedPositionGroup === 'forwards'"
+            (click)="selectPositionGroup('forwards')"
+          >
+            Delanteras
+          </button>
+        </nav>
+
+        @if (loading) {
+          <p class="status-message">Cargando jugadoras...</p>
+        } @else if (error) {
+          <p class="error-message">{{ error }}</p>
+        } @else {
+          @if (players.length > 0) {
+            @if (viewMode === 'cards') {
+              <div class="players-grid">
+                @for (player of players; track player.playerEditionId) {
+                  <article class="player-card">
+                    <div class="card-topline">
+                      <span class="player-position">
+                        {{ player.position || 'Sin posición' }}
+                      </span>
+                      <span class="player-rating">
+                        {{ player.rating ?? '—' }}
+                      </span>
+                    </div>
+
+                    <div class="player-avatar">
+                      {{ getPlayerInitials(player.name) }}
+                    </div>
+
+                    <h4>
+                      <a
+                        [routerLink]="['/players', player.id]"
+                        [queryParams]="{ editionId: player.playerEditionId }"
+                      >
+                        {{ player.name }}
+                      </a>
+                    </h4>
+
+                    <p class="player-club">
+                      {{ player.club || 'Club no disponible' }}
+                    </p>
+
+                    <div class="card-statistics">
+                      <div>
+                        <span>Potencial</span>
+                        <strong>{{ player.potential ?? '—' }}</strong>
+                      </div>
+                      <div>
+                        <span>Edad</span>
+                        <strong>{{ player.age ?? '—' }}</strong>
+                      </div>
+                      <div>
+                        <span>Edición</span>
+                        <strong>FIFA {{ player.edition }}</strong>
+                      </div>
+                    </div>
+
+                    <div class="card-nationality">
+                      {{ player.nationality || 'Nacionalidad no disponible' }}
+                    </div>
+                  </article>
+                }
+              </div>
+            } @else {
+              <div class="players-list-view">
+                <div class="list-header">
+                  <span>Jugadora</span>
+                  <span>Posición</span>
+                  <span>Club</span>
+                  <span>Nacionalidad</span>
+                  <span>Media</span>
+                  <span>Potencial</span>
+                </div>
+
+                @for (player of players; track player.playerEditionId) {
+                  <article class="player-list-row">
+                    <div class="list-player-info">
+                      <div class="list-player-avatar">
+                        {{ getPlayerInitials(player.name) }}
+                      </div>
+                      <a
+                        [routerLink]="['/players', player.id]"
+                        [queryParams]="{ editionId: player.playerEditionId }"
+                      >
+                        {{ player.name }}
+                      </a>
+                    </div>
+
+                    <span class="list-position">
+                      {{ player.position || '—' }}
+                    </span>
+                    <span>{{ player.club || '—' }}</span>
+                    <span>{{ player.nationality || '—' }}</span>
+                    <strong class="list-rating">
+                      {{ player.rating ?? '—' }}
+                    </strong>
+                    <strong>{{ player.potential ?? '—' }}</strong>
+                  </article>
+                }
+              </div>
+            }
+          } @else {
+            <p class="empty-results">No se encontraron jugadoras.</p>
+          }
+
+          <nav class="pagination" aria-label="Paginación de jugadoras">
+            <button
+              type="button"
+              (click)="previousPage()"
+              [disabled]="currentPage === 1 || loading"
+            >
+              Anterior
+            </button>
+            <span>
+              Página {{ currentPage }} de {{ totalPages }}
+            </span>
+            <button
+              type="button"
+              (click)="nextPage()"
+              [disabled]="currentPage >= totalPages || loading"
+            >
+              Siguiente
+            </button>
+          </nav>
+        }
+      </section>
+    </div>
+  </section>
+</main>
+
+<footer class="main-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <h2>⚽ FIFA Stats</h2>
+      <p>
+        Explorá estadísticas, rendimiento y evolución de jugadores
+        y jugadoras a través de distintas ediciones de FIFA.
+      </p>
+      <div class="footer-info">
+        <p>📊 Datos organizados por edición</p>
+        <p>📅 Ediciones FIFA 2015–2023</p>
+      </div>
+    </div>
+
+    <div class="footer-links">
+      <h3>Explorar</h3>
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/players">Jugadores</a>
+      <a routerLink="/players-women">Jugadoras</a>
+    </div>
+
+    <div class="footer-features">
+      <h3>Estadísticas</h3>
+      <p>Media general</p>
+      <p>Atributos individuales</p>
+      <p>Evolución por edición</p>
+      <p>Nacionalidades</p>
+    </div>
+  </div>
+
+  <div class="footer-tagline">
+    <span>🏆</span>
+    <div>
+      <h3>Cada edición, una historia.</h3>
+      <p>Un proyecto educativo de desarrollo web.</p>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 FIFA Stats · Todos los derechos reservados.</p>
+  </div>
+</footer>
+
+<button
+  type="button"
+  class="back-to-top"
+  (click)="scrollToTop()"
+  aria-label="Volver al inicio de la página"
+  title="Volver arriba"
+>
+  ↑
+</button>
+
 
 
 
